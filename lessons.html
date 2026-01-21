@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Көңілді математика - Сабақтар</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background-color: #f9fdff;
+            background-image: radial-gradient(#c2e5ff 1px, transparent 1px);
+            background-size: 25px 25px;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #ff7b9c;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome {
+            color: #6ab1ff;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ff7b9c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 123, 156, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 123, 156, 0.4);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #6ab1ff;
+            font-size: 2rem;
+            margin: 30px 0 20px;
+        }
+        
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .lesson-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        
+        .lesson-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border-color: #ff7b9c;
+        }
+        
+        .lesson-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .addition { color: #ff7b9c; }
+        .subtraction { color: #6ab1ff; }
+        .multiplication { color: #ffcc00; }
+        .division { color: #7bff7b; }
+        
+        .lesson-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .lesson-card p {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .difficulty-section {
+            display: none;
+            margin-top: 40px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .difficulty-title {
+            text-align: center;
+            color: #ff7b9c;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .difficulty-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .difficulty-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .easy { border-top: 8px solid #7bff7b; }
+        .medium { border-top: 8px solid #ffcc00; }
+        .hard { border-top: 8px solid #ff7b9c; }
+        
+        .difficulty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .difficulty-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .difficulty-card p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .task-count {
+            display: inline-block;
+            background-color: #eef7ff;
+            color: #6ab1ff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(106, 177, 255, 0.3);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 177, 255, 0.4);
+        }
+        
+        .selected-lesson {
+            background-color: #f0f9ff;
+            border-color: #6ab1ff;
+        }
+        
+        /* Аватар стильдері */
+        .user-avatar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff7b9c;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 123, 156, 0.3);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(255, 123, 156, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .lessons-grid,
+            .difficulty-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" id="backButton">
+        ← Артқа
+    </button>
+    
+    <!-- Аватар -->
+    <img id="userAvatar" class="user-avatar" src="" alt="Аватар">
+    
+    <div class="container">
+        <div class="header">
+            <h1>Математика Сабақтары</h1>
+            <div class="welcome" id="welcomeMessage">Қош келдіңіз, балалар!</div>
+        </div>
+        
+        <h2 class="section-title">Сабақты таңдаңыз:</h2>
+        
+        <div class="lessons-grid" id="lessonsGrid">
+            <div class="lesson-card" data-lesson="addition">
+                <div class="lesson-icon addition">
+                    +
+                </div>
+                <h3>Қосу</h3>
+                <p>Сандарды қосу үйренеміз. Бірінші қадам!</p>
+            </div>
+            
+            <div class="lesson-card" data-lesson="subtraction">
+                <div class="lesson-icon subtraction">
+                    −
+                </div>
+                <h3>Алу</h3>
+                <p>Сандарды азайтуды үйренеміз. Қызықты!</p>
+            </div>
+            
+            <div class="lesson-card" data-lesson="multiplication">
+                <div class="lesson-icon multiplication">
+                    ×
+                </div>
+                <h3>Көбейту</h3>
+                <p>Көбейту кестесін үйренеміз. Маңызды!</p>
+            </div>
+            
+            <div class="lesson-card" data-lesson="division">
+                <div class="lesson-icon division">
+                    ÷
+                </div>
+                <h3>Бөлу</h3>
+                <p>Бөлуді үйренеміз. Есептеулерді жеңілдетелік!</p>
+            </div>
+        </div>
+        
+        <div class="difficulty-section" id="difficultySection">
+            <h2 class="difficulty-title" id="difficultyTitle">Қосу сабағы</h2>
+            
+            <div class="difficulty-grid">
+                <div class="difficulty-card easy" data-difficulty="easy">
+                    <div class="difficulty-icon">
+                        ★
+                    </div>
+                    <h3>Жеңіл</h3>
+                    <p>1-ден 10-ға дейінгі сандармен жұмыс істейміз</p>
+                    <div class="task-count">5 тапсырма</div>
+                    <button class="start-btn" data-difficulty="easy">Бастау</button>
+                </div>
+                
+                <div class="difficulty-card medium" data-difficulty="medium">
+                    <div class="difficulty-icon">
+                        ★★
+                    </div>
+                    <h3>Орташа</h3>
+                    <p>1-ден 20-ға дейінгі сандармен жұмыс істейміз</p>
+                    <div class="task-count">8 тапсырма</div>
+                    <button class="start-btn" data-difficulty="medium">Бастау</button>
+                </div>
+                
+                <div class="difficulty-card hard" data-difficulty="hard">
+                    <div class="difficulty-icon">
+                        ★★★
+                    </div>
+                    <h3>Қиын</h3>
+                    <p>1-ден 100-ге дейінгі сандармен жұмыс істейміз</p>
+                    <div class="task-count">10 тапсырма</div>
+                    <button class="start-btn" data-difficulty="hard">Бастау</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL параметрлерінен пайдаланушы атын алу
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'Бала';
+        const age = parseInt(urlParams.get('age')) || 7;
+        
+        // Аватарды жүктеу
+        function loadUserAvatar() {
+            const savedAvatar = localStorage.getItem('userAvatar');
+            const avatarImg = document.getElementById('userAvatar');
+            
+            if (savedAvatar) {
+                avatarImg.src = savedAvatar;
+            } else {
+                // Әдепкі аватар (тексттік версия)
+                avatarImg.alt = username;
+                avatarImg.style.backgroundColor = '#6ab1ff';
+                avatarImg.style.display = 'flex';
+                avatarImg.style.alignItems = 'center';
+                avatarImg.style.justifyContent = 'center';
+                avatarImg.style.color = 'white';
+                avatarImg.style.fontWeight = 'bold';
+                avatarImg.style.fontSize = '20px';
+                avatarImg.textContent = username.charAt(0).toUpperCase();
+                avatarImg.src = '';
+            }
+            
+            // Аватарға басқанда профильге өту
+            avatarImg.addEventListener('click', function() {
+                window.location.href = `profile.html?username=${encodeURIComponent(username)}&age=${age}`;
+            });
+        }
+        
+        // Қош келдік хабарламасы
+        document.getElementById('welcomeMessage').textContent = `Қош келдіңіз, ${username}! Сіз ${age} жастасыз.`;
+        
+        // Артқа түймесі (тіркелу бетіне қайта оралу)
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.history.back();
+        });
+        
+        // Сабақтарды таңдау
+        const lessonCards = document.querySelectorAll('.lesson-card');
+        const difficultySection = document.getElementById('difficultySection');
+        const difficultyTitle = document.getElementById('difficultyTitle');
+        
+        let selectedLesson = 'addition';
+        const lessonTitles = {
+            'addition': 'Қосу',
+            'subtraction': 'Алу',
+            'multiplication': 'Көбейту',
+            'division': 'Бөлу'
+        };
+        
+        // Әр сабақ картасына тыққанда
+        lessonCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Барлық карталардан таңдалған класты алып тастау
+                lessonCards.forEach(c => c.classList.remove('selected-lesson'));
+                
+                // Ағымдағы картаға таңдалған класты қосу
+                this.classList.add('selected-lesson');
+                
+                // Таңдалған сабақты сақтау
+                selectedLesson = this.dataset.lesson;
+                
+                // Қиындық бөлімін көрсету
+                difficultySection.style.display = 'block';
+                difficultyTitle.textContent = `${lessonTitles[selectedLesson]} сабағы`;
+                
+                // Қиындық бөліміне тежеу
+                difficultySection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // Қиындықты таңдау және ойын бетіне өту
+        const startButtons = document.querySelectorAll('.start-btn');
+        
+        startButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation(); // Картаға да тиіспеу үшін
+                const difficulty = this.dataset.difficulty;
+                
+                // Ойын бетіне өту
+                window.location.href = `game.html?lesson=${selectedLesson}&difficulty=${difficulty}&username=${encodeURIComponent(username)}&age=${age}`;
+            });
+        });
+        
+        // Қиындық карталарын басқанда да бастау түймесін басу
+        const difficultyCards = document.querySelectorAll('.difficulty-card');
+        
+        difficultyCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Егер бастау түймесіне басқан болса, оны тоқтатпау керек
+                if (e.target.classList.contains('start-btn')) return;
+                
+                const difficulty = this.dataset.difficulty;
+                
+                // Ойын бетіне өту
+                window.location.href = `game.html?lesson=${selectedLesson}&difficulty=${difficulty}&username=${encodeURIComponent(username)}&age=${age}`;
+            });
+        });
+        
+        // Бет жүктелгенде
+        document.addEventListener('DOMContentLoaded', function() {
+            // Бірінші сабақты таңдалған етіп көрсету
+            lessonCards[0].classList.add('selected-lesson');
+            
+            // Аватарды жүктеу
+            loadUserAvatar();
+        });
+    </script>
+</body>
+</html>

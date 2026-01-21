@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Көңілді математика - Тіркелу</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#a8d8ff 1px, transparent 1px);
+            background-size: 20px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 150, 0.1);
+            border-radius: 25px;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            padding: 40px 30px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .left-panel h1 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .left-panel p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .math-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .math-icons i {
+            font-size: 2rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .decoration {
+            position: absolute;
+            font-size: 6rem;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .decoration:nth-child(1) { top: 20px; left: 20px; }
+        .decoration:nth-child(2) { bottom: 20px; right: 20px; }
+        .decoration:nth-child(3) { top: 50%; left: 10%; }
+        
+        .right-panel {
+            flex: 1.2;
+            padding: 40px;
+        }
+        
+        .right-panel h2 {
+            color: #ff7b9c;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .right-panel .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus,
+        select:focus {
+            border-color: #6ab1ff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(106, 177, 255, 0.2);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff7b9c;
+        }
+        
+        .avatar-upload {
+            border: 2px dashed #6ab1ff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #f9fdff;
+        }
+        
+        .avatar-upload:hover {
+            background-color: #eef7ff;
+            border-color: #ff7b9c;
+        }
+        
+        .avatar-upload i {
+            font-size: 2.5rem;
+            color: #6ab1ff;
+            margin-bottom: 10px;
+        }
+        
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff7b9c;
+            display: none;
+            margin: 0 auto 10px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #ff7b9c, #ff9a8b);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 123, 156, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 123, 156, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .login-link a {
+            color: #6ab1ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-panel, .right-panel {
+                padding: 30px 20px;
+            }
+            
+            .math-icons {
+                justify-content: center;
+            }
+        }
+        
+        .age-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .age-group input {
+            flex: 1;
+        }
+        
+        .age-label {
+            color: #6ab1ff;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        /* Ойнау бөлімі стильдері */
+        .play-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px dashed #ff7b9c;
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 6px 20px rgba(106, 177, 255, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .play-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(106, 177, 255, 0.6);
+        }
+        
+        .play-btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .play-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .play-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .play-text {
+            font-size: 1.8rem;
+            color: #ff7b9c;
+            font-weight: bold;
+        }
+        
+        .play-instruction {
+            color: #666;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        
+        /* Кіру түймесі */
+        .login-btn {
+            background: linear-gradient(135deg, #7bff7b, #9aff9a);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+            box-shadow: 0 4px 10px rgba(123, 255, 123, 0.3);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(123, 255, 123, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="decoration">+</div>
+            <div class="decoration">−</div>
+            <div class="decoration">×</div>
+            <div class="decoration">÷</div>
+            
+            <h1>Бастауыш сыныптарға арналған есептеу дағдыларын дамытатын қосымша</h1>
+            <p>Бұл қосымша балаларға есептеу дағдыларын дамытуға көмектеседі. Ойын түріндегі тапсырмалармен математиканы тез және қызықты үйреніңіз!</p>
+            
+            <div class="math-icons">
+                <i>+</i>
+                <i>−</i>
+                <i>×</i>
+                <i>÷</i>
+                <i>=</i>
+                <i>√</i>
+                <i>π</i>
+                <i>★</i>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <h2>ТІРКЕЛУ</h2>
+            <p class="subtitle">Жаңа аккаунт жасау үшін форманы толтырыңыз</p>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="username">Аты-жөніңіз:</label>
+                    <input type="text" id="username" name="username" placeholder="Мысалы: Айгерім" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Электрондық пошта:</label>
+                    <input type="email" id="email" name="email" placeholder="мысал@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Құпия сөз:</label>
+                    <input type="password" id="password" name="password" placeholder="Кемінде 6 таңба" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label>Жынысы:</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="boy" checked>
+                            <span>Ұл бала</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="girl">
+                            <span>Қыз бала</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Жасы:</label>
+                    <div class="age-group">
+                        <input type="number" id="age" name="age" min="5" max="12" value="7" required>
+                        <span class="age-label">жас</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Профиль суреті:</label>
+                    <div class="avatar-upload" id="avatarUpload">
+                        <img id="avatarPreview" class="avatar-preview" src="" alt="Сурет алдын ала қарау">
+                        <i>📷</i>
+                        <p>Суретті жүктеу үшін басыңыз</p>
+                        <input type="file" id="avatar" name="avatar" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    Тіркелу
+                </button>
+            </form>
+            
+            <div class="login-link">
+                Аккаунтыңыз бар ма? 
+                <button class="login-btn" id="loginBtn">Кіру</button>
+            </div>
+            
+            <!-- Ойнау бөлімі -->
+            <div class="play-section">
+                <p class="play-text">Аккаунтыңызды жасаған соң:</p>
+                <button id="playButton" class="play-btn" disabled>
+                    <span>ОЙНАУ</span>
+                </button>
+                <p class="play-instruction">Тіркелуді аяқтаңыз, содан кейін ойынды бастауға болады!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Бет жүктелгенде тек кіру функционалын қосу
+        document.addEventListener('DOMContentLoaded', function() {
+            // Кіру түймесіне әсер ету
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                const savedUsername = localStorage.getItem('currentUsername');
+                
+                if (savedUsername) {
+                    const age = localStorage.getItem('currentAge') || 7;
+                    window.location.href = `lessons.html?username=${encodeURIComponent(savedUsername)}&age=${age}`;
+                } else {
+                    alert('Сіз әлі тіркелмегенсіз. Алдымен тіркелуіңіз керек.');
+                }
+            });
+            
+            // Аватар жүктеу функциясы
+            document.getElementById('avatarUpload').addEventListener('click', function() {
+                document.getElementById('avatar').click();
+            });
+            
+            document.getElementById('avatar').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const avatarPreview = document.getElementById('avatarPreview');
+                        avatarPreview.src = e.target.result;
+                        avatarPreview.style.display = 'block';
+                        
+                        // Жүктеу белгішесін жасыру
+                        const uploadIcon = document.querySelector('#avatarUpload i');
+                        const uploadText = document.querySelector('#avatarUpload p');
+                        uploadIcon.style.display = 'none';
+                        uploadText.textContent = 'Суретті өзгерту үшін басыңыз';
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // "Ойнау" түймесін белсендіру/өшіру
+            const playButton = document.getElementById('playButton');
+            const registrationForm = document.getElementById('registrationForm');
+            
+            // Форма өзгергенде тексеру
+            registrationForm.addEventListener('input', function() {
+                // Барлық міндетті өрістер толтырылғандығын тексеру
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const age = document.getElementById('age').value;
+                
+                if (username && email && password.length >= 6 && age >= 5 && age <= 12) {
+                    playButton.disabled = false;
+                    playButton.innerHTML = '<span>ОЙНАУ</span>';
+                } else {
+                    playButton.disabled = true;
+                }
+            });
+            
+            // "Ойнау" түймесін басқанда
+            playButton.addEventListener('click', function() {
+                if (!playButton.disabled) {
+                    // Мәліметтерді алу
+                    const username = document.getElementById('username').value;
+                    const age = document.getElementById('age').value;
+                    
+                    // Сабақтар бетіне өту
+                    window.location.href = `lessons.html?username=${encodeURIComponent(username)}&age=${age}`;
+                }
+            });
+            
+            // Форма жіберілгенде
+            document.getElementById('registrationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Мәліметтерді алу
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const age = document.getElementById('age').value;
+                const gender = document.querySelector('input[name="gender"]:checked').value;
+                const genderText = gender === 'boy' ? 'Ұл бала' : 'Қыз бала';
+                
+                // Пайдаланушы деректерін сақтау
+                localStorage.setItem('currentUsername', username);
+                localStorage.setItem('currentAge', age);
+                localStorage.setItem('userGender', genderText);
+                
+                // Аватарды сақтау (егер жүктелген болса)
+                const avatarInput = document.getElementById('avatar');
+                if (avatarInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        localStorage.setItem('userAvatar', e.target.result);
+                    };
+                    reader.readAsDataURL(avatarInput.files[0]);
+                }
+                
+                // Мәліметтерді көрсету
+                alert(`Сіз сәтті тіркелдіңіз!\n\nАты-жөні: ${username}\nПошта: ${email}\nЖасы: ${age}\nЖынысы: ${genderText}\n\nҚосымшаға қош келдіңіз!`);
+                
+                // "Ойнау" түймесін белсендіру
+                playButton.disabled = false;
+                playButton.innerHTML = '<span>ОЙНАУ</span>';
+                
+                // Өрістерді құлыптау (міндетті емес)
+                document.getElementById('username').disabled = true;
+                document.getElementById('email').disabled = true;
+                document.getElementById('password').disabled = true;
+                document.getElementById('age').disabled = true;
+                document.querySelectorAll('input[name="gender"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+                
+                document.querySelector('.play-instruction').textContent = "Енді 'ОЙНАУ' түймесін басып, математиканы үйренуге бастай аласыз!";
+            });
+            
+            // Жас үшін диапазон көрсеткіші
+            const ageInput = document.getElementById('age');
+            ageInput.addEventListener('input', function() {
+                if (this.value < 5) this.value = 5;
+                if (this.value > 12) this.value = 12;
+            });
+        });
+    </script>
+</body>
+</html>

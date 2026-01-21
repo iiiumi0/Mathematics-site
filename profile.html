@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менің профилім - Көңілді математика</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f9ff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #ff7b9c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #ff7b9c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 123, 156, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 123, 156, 0.4);
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 150, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .avatar-section {
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #ff7b9c;
+            margin-bottom: 15px;
+        }
+        
+        .change-avatar-btn {
+            background-color: #6ab1ff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .change-avatar-btn:hover {
+            background-color: #5aa0ff;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            color: #ff7b9c;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .profile-details {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .detail-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .detail-item i {
+            color: #6ab1ff;
+            width: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: #f9fdff;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 3px solid #e6f2ff;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            color: #6ab1ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .trophy { color: #ffcc00; }
+        .clock { color: #7bff7b; }
+        .chart { color: #ff7b9c; }
+        .target { color: #6ab1ff; }
+        
+        .section-title {
+            color: #6ab1ff;
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px dashed #ff7b9c;
+        }
+        
+        .game-history {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 150, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .history-table th {
+            background-color: #f0f9ff;
+            color: #6ab1ff;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+        
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #666;
+        }
+        
+        .history-table tr:hover {
+            background-color: #f9fdff;
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-easy { background-color: #e6ffe6; color: #2ecc71; }
+        .badge-medium { background-color: #fff9e6; color: #f39c12; }
+        .badge-hard { background-color: #ffe6e6; color: #e74c3c; }
+        
+        .percentage-good { color: #2ecc71; font-weight: bold; }
+        .percentage-medium { color: #f39c12; font-weight: bold; }
+        .percentage-low { color: #e74c3c; font-weight: bold; }
+        
+        .progress-chart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .chart-title {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .chart-bar {
+            height: 20px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .chart-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .chart-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #999;
+            font-size: 1.2rem;
+            padding: 40px;
+            background-color: #f9fdff;
+            border-radius: 20px;
+            border: 2px dashed #ddd;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(106, 177, 255, 0.3);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 177, 255, 0.4);
+        }
+        
+        .action-btn.play {
+            background: linear-gradient(135deg, #ff7b9c, #ff9a8b);
+        }
+        
+        .action-btn.reset {
+            background: linear-gradient(135deg, #ffcc00, #ffdd44);
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-card, .game-history {
+                padding: 20px;
+            }
+            
+            .history-table {
+                font-size: 0.9rem;
+            }
+            
+            .history-table th, .history-table td {
+                padding: 10px;
+            }
+            
+            .action-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" id="backButton">
+        ← Артқа
+    </button>
+    
+    <div class="profile-container">
+        <div class="header">
+            <h1>Менің Профилім</h1>
+        </div>
+        
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar-section">
+                    <img id="profileAvatar" class="profile-avatar" src="" alt="Аватар">
+                    <button class="change-avatar-btn" id="changeAvatarBtn">
+                        Аватарды өзгерту
+                    </button>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="profile-info">
+                    <h2 class="profile-name" id="profileName">Бала</h2>
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <span>👤 Аты: <span id="userNameText">Бала</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <span>🎂 Жасы: <span id="userAge">7</span> жаста</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>⚥ Жынысы: <span id="userGender">Ұл бала</span></span>
+                        </div>
+                        <div class="detail-item">
+                            <span>📅 Тіркелген: <span id="regDate">Бүгін</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon trophy">
+                        🏆
+                    </div>
+                    <div class="stat-value" id="totalGames">0</div>
+                    <div class="stat-label">Ойналған ойындар</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon trophy">
+                        ⭐
+                    </div>
+                    <div class="stat-value" id="bestScore">0%</div>
+                    <div class="stat-label">Ең жақсы нәтиже</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon clock">
+                        ⏱️
+                    </div>
+                    <div class="stat-value" id="avgTime">0:00</div>
+                    <div class="stat-label">Орташа уақыт</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon target">
+                        🎯
+                    </div>
+                    <div class="stat-value" id="successRate">0%</div>
+                    <div class="stat-label">Сәттілік деңгейі</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="section-title">Ойын тарихы</h3>
+        <div class="game-history">
+            <div id="historyTableContainer">
+                <!-- Таблица с историей появится здесь -->
+            </div>
+        </div>
+        
+        <h3 class="section-title">Даму статистикасы</h3>
+        <div class="progress-chart" id="progressChart">
+            <!-- Графики прогресса появятся здесь -->
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn play" id="playButton">
+                🎮 Ойнауды жалғастыру
+            </button>
+            <button class="action-btn" id="homeButton">
+                🏠 Басты бетке
+            </button>
+            <button class="action-btn reset" id="resetButton">
+                🗑️ Статистиканы тазалау
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // URL параметрлері
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'Бала';
+        const age = urlParams.get('age') || 7;
+        
+        // Пользовательские данные
+        let userData = {
+            name: username,
+            age: age,
+            gender: 'Ұл бала',
+            registrationDate: new Date().toLocaleDateString('kk-KZ')
+        };
+        
+        // Бетті инициализациялау
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadGameHistory();
+            updateStatistics();
+            loadProgressCharts();
+            
+            // Кнопкаларға әсер ету
+            document.getElementById('backButton').addEventListener('click', function() {
+                window.history.back();
+            });
+            
+            document.getElementById('playButton').addEventListener('click', function() {
+                window.location.href = `lessons.html?username=${encodeURIComponent(username)}&age=${age}`;
+            });
+            
+            document.getElementById('homeButton').addEventListener('click', function() {
+                window.location.href = `index.html?username=${encodeURIComponent(username)}&age=${age}`;
+            });
+            
+            document.getElementById('resetButton').addEventListener('click', function() {
+                if (confirm('Статистиканы тазалағыңыз келе ме? Бұл әрекетті болдырмау мүмкін емес.')) {
+                    localStorage.removeItem('gameHistory');
+                    localStorage.removeItem('bestScores');
+                    alert('Статистика тазаланды!');
+                    loadGameHistory();
+                    updateStatistics();
+                    loadProgressCharts();
+                }
+            });
+            
+            // Аватарды өзгерту
+            document.getElementById('changeAvatarBtn').addEventListener('click', function() {
+                document.getElementById('avatarInput').click();
+            });
+            
+            document.getElementById('avatarInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const avatarData = e.target.result;
+                        localStorage.setItem('userAvatar', avatarData);
+                        document.getElementById('profileAvatar').src = avatarData;
+                        alert('Аватар сәтті өзгертілді!');
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+        
+        // Пайдаланушы деректерін жүктеу
+        function loadUserData() {
+            // Аты
+            document.getElementById('profileName').textContent = userData.name;
+            document.getElementById('userNameText').textContent = userData.name;
+            document.getElementById('userAge').textContent = userData.age;
+            document.getElementById('regDate').textContent = userData.registrationDate;
+            
+            // Жынысты сақталған деректерден алу
+            const savedGender = localStorage.getItem('userGender');
+            if (savedGender) {
+                userData.gender = savedGender;
+            }
+            document.getElementById('userGender').textContent = userData.gender;
+            
+            // Аватарды жүктеу
+            const savedAvatar = localStorage.getItem('userAvatar');
+            const avatarImg = document.getElementById('profileAvatar');
+            
+            if (savedAvatar) {
+                avatarImg.src = savedAvatar;
+            } else {
+                // Әдепкі аватар (тексттік версия)
+                avatarImg.alt = username;
+                avatarImg.style.backgroundColor = '#6ab1ff';
+                avatarImg.style.display = 'flex';
+                avatarImg.style.alignItems = 'center';
+                avatarImg.style.justifyContent = 'center';
+                avatarImg.style.color = 'white';
+                avatarImg.style.fontWeight = 'bold';
+                avatarImg.style.fontSize = '40px';
+                avatarImg.textContent = username.charAt(0).toUpperCase();
+                avatarImg.src = '';
+            }
+        }
+        
+        // Ойын тарихын жүктеу
+        function loadGameHistory() {
+            const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const container = document.getElementById('historyTableContainer');
+            
+            if (gameHistory.length === 0) {
+                container.innerHTML = '<div class="no-data">Әлі ойын тарихы жоқ. Бірінші ойынды ойнап көріңіз!</div>';
+                return;
+            }
+            
+            let html = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Күні</th>
+                            <th>Сабақ</th>
+                            <th>Қиындық</th>
+                            <th>Нәтиже</th>
+                            <th>Уақыт</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // Соңғы 10 ойынды көрсету (кері ретпен)
+            const recentGames = gameHistory.slice(-10).reverse();
+            
+            recentGames.forEach(game => {
+                const date = new Date(game.date).toLocaleDateString('kk-KZ');
+                const lessonName = getLessonName(game.lesson);
+                const difficultyName = getDifficultyName(game.difficulty);
+                const difficultyClass = getDifficultyClass(game.difficulty);
+                const timeFormatted = formatTime(game.time);
+                const percentageClass = getPercentageClass(game.percentage);
+                
+                html += `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${lessonName}</td>
+                        <td><span class="difficulty-badge ${difficultyClass}">${difficultyName}</span></td>
+                        <td><span class="${percentageClass}">${game.score}/${game.totalTasks} (${game.percentage}%)</span></td>
+                        <td>${timeFormatted}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // Статистиканы жаңарту
+        function updateStatistics() {
+            const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const bestScores = JSON.parse(localStorage.getItem('bestScores') || '{}');
+            
+            // Жалпы ойындар саны
+            document.getElementById('totalGames').textContent = gameHistory.length;
+            
+            // Ең жақсы нәтиже
+            let bestPercentage = 0;
+            Object.values(bestScores).forEach(score => {
+                if (score.percentage > bestPercentage) {
+                    bestPercentage = score.percentage;
+                }
+            });
+            document.getElementById('bestScore').textContent = bestPercentage + '%';
+            
+            // Орташа уақыт
+            let totalTime = 0;
+            gameHistory.forEach(game => {
+                totalTime += game.time;
+            });
+            const avgTime = gameHistory.length > 0 ? Math.round(totalTime / gameHistory.length) : 0;
+            document.getElementById('avgTime').textContent = formatTime(avgTime);
+            
+            // Сәттілік деңгейі
+            let totalCorrect = 0;
+            let totalTasks = 0;
+            gameHistory.forEach(game => {
+                totalCorrect += game.score;
+                totalTasks += game.totalTasks;
+            });
+            const successRate = totalTasks > 0 ? Math.round((totalCorrect / totalTasks) * 100) : 0;
+            document.getElementById('successRate').textContent = successRate + '%';
+        }
+        
+        // Прогресс графиктерін жүктеу
+        function loadProgressCharts() {
+            const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const container = document.getElementById('progressChart');
+            
+            if (gameHistory.length === 0) {
+                container.innerHTML = '<div class="no-data">Әлі статистика жоқ. Ойындар ойнап, прогрессіңізді көріңіз!</div>';
+                return;
+            }
+            
+            // Сабақтар бойынша статистика
+            const lessonStats = {
+                'addition': { name: 'Қосу', total: 0, correct: 0 },
+                'subtraction': { name: 'Алу', total: 0, correct: 0 },
+                'multiplication': { name: 'Көбейту', total: 0, correct: 0 },
+                'division': { name: 'Бөлу', total: 0, correct: 0 }
+            };
+            
+            gameHistory.forEach(game => {
+                if (lessonStats[game.lesson]) {
+                    lessonStats[game.lesson].total += game.totalTasks;
+                    lessonStats[game.lesson].correct += game.score;
+                }
+            });
+            
+            // Қиындық бойынша статистика
+            const difficultyStats = {
+                'easy': { name: 'Жеңіл', total: 0, correct: 0 },
+                'medium': { name: 'Орташа', total: 0, correct: 0 },
+                'hard': { name: 'Қиын', total: 0, correct: 0 }
+            };
+            
+            gameHistory.forEach(game => {
+                if (difficultyStats[game.difficulty]) {
+                    difficultyStats[game.difficulty].total += game.totalTasks;
+                    difficultyStats[game.difficulty].correct += game.score;
+                }
+            });
+            
+            let html = '';
+            
+            // Сабақтар бойынша график
+            html += '<div class="chart-container">';
+            html += '<h4 class="chart-title">Сабақтар бойынша сәттілік</h4>';
+            
+            Object.entries(lessonStats).forEach(([key, stat]) => {
+                if (stat.total > 0) {
+                    const percentage = Math.round((stat.correct / stat.total) * 100);
+                    const percentageClass = getPercentageClass(percentage);
+                    
+                    html += `
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>${stat.name}</span>
+                                <span class="${percentageClass}">${percentage}%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: ${percentage}%; background-color: ${getColorByPercentage(percentage)};"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            
+            // Қиындық бойынша график
+            html += '<div class="chart-container">';
+            html += '<h4 class="chart-title">Қиындық бойынша сәттілік</h4>';
+            
+            Object.entries(difficultyStats).forEach(([key, stat]) => {
+                if (stat.total > 0) {
+                    const percentage = Math.round((stat.correct / stat.total) * 100);
+                    const percentageClass = getPercentageClass(percentage);
+                    
+                    html += `
+                        <div class="chart-item">
+                            <div class="chart-label">
+                                <span>${stat.name}</span>
+                                <span class="${percentageClass}">${percentage}%</span>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="chart-fill" style="width: ${percentage}%; background-color: ${getColorByPercentage(percentage)};"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            // Анимация для графиков
+            setTimeout(() => {
+                document.querySelectorAll('.chart-fill').forEach(fill => {
+                    const width = fill.style.width;
+                    fill.style.width = '0%';
+                    setTimeout(() => {
+                        fill.style.width = width;
+                    }, 100);
+                });
+            }, 300);
+        }
+        
+        // Көмекші функциялар
+        function getLessonName(lessonKey) {
+            const lessons = {
+                'addition': 'Қосу',
+                'subtraction': 'Алу',
+                'multiplication': 'Көбейту',
+                'division': 'Бөлу'
+            };
+            return lessons[lessonKey] || lessonKey;
+        }
+        
+        function getDifficultyName(difficulty) {
+            const difficulties = {
+                'easy': 'Жеңіл',
+                'medium': 'Орташа',
+                'hard': 'Қиын'
+            };
+            return difficulties[difficulty] || difficulty;
+        }
+        
+        function getDifficultyClass(difficulty) {
+            const classes = {
+                'easy': 'badge-easy',
+                'medium': 'badge-medium',
+                'hard': 'badge-hard'
+            };
+            return classes[difficulty] || '';
+        }
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function getPercentageClass(percentage) {
+            if (percentage >= 80) return 'percentage-good';
+            if (percentage >= 60) return 'percentage-medium';
+            return 'percentage-low';
+        }
+        
+        function getColorByPercentage(percentage) {
+            if (percentage >= 80) return '#2ecc71';
+            if (percentage >= 60) return '#f39c12';
+            return '#e74c3c';
+        }
+    </script>
+</body>
+</html>
