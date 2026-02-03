@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Көңілді математика - Ойын</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -16,6 +17,7 @@
             background-color: #f0f9ff;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
         }
         
         .game-container {
@@ -25,6 +27,7 @@
             border-radius: 25px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 150, 0.1);
+            position: relative;
         }
         
         .game-header {
@@ -75,6 +78,7 @@
             align-items: center;
             gap: 10px;
             transition: all 0.3s;
+            z-index: 10;
         }
         
         .user-info:hover {
@@ -93,7 +97,7 @@
         .timer-container {
             position: absolute;
             top: 20px;
-            right: 180px;
+            left: 20px;
             background: linear-gradient(135deg, #ff7b9c, #ff9a8b);
             color: white;
             padding: 10px 20px;
@@ -104,6 +108,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 10;
         }
         
         .back-btn {
@@ -169,6 +174,8 @@
         .subtraction { color: #6ab1ff; }
         .multiplication { color: #ffcc00; }
         .division { color: #7bff7b; }
+        .brackets { color: #a855f7; }
+        .mixed { color: #00b894; }
         
         .task-text {
             font-size: 2.5rem;
@@ -242,6 +249,10 @@
             display: block;
             transition: all 0.3s;
             box-shadow: 0 6px 20px rgba(255, 123, 156, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .next-btn:hover {
@@ -290,6 +301,10 @@
             padding: 10px 20px;
             border-radius: 15px;
             display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .results-message {
@@ -309,6 +324,10 @@
             margin: 20px 10px;
             display: inline-block;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .home-btn {
@@ -322,6 +341,10 @@
             margin: 20px 10px;
             display: inline-block;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .profile-btn {
@@ -335,6 +358,10 @@
             margin: 20px 10px;
             display: inline-block;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         @keyframes fadeIn {
@@ -357,13 +384,22 @@
             }
             
             .timer-container {
-                right: 20px;
-                top: 80px;
+                top: 20px;
+                left: 20px;
+                right: auto;
             }
             
             .user-info {
                 top: 20px;
                 right: 20px;
+            }
+            
+            .restart-btn,
+            .home-btn,
+            .profile-btn {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
             }
         }
     </style>
@@ -413,7 +449,9 @@
                 
                 <div class="feedback" id="feedback"></div>
                 
-                <button class="next-btn" id="nextButton" disabled>Келесі тапсырма</button>
+                <button class="next-btn" id="nextButton" disabled>
+                    <i class="fas fa-arrow-right"></i> Келесі тапсырма
+                </button>
             </div>
         </div>
         
@@ -451,7 +489,9 @@
             'addition': 'Қосу',
             'subtraction': 'Алу', 
             'multiplication': 'Көбейту',
-            'division': 'Бөлу'
+            'division': 'Бөлу',
+            'brackets': 'Жақшамен жұмыс',
+            'mixed': 'Аралас есептер'
         };
         
         // Қиындық атаулары
@@ -468,20 +508,14 @@
             'hard': 'badge-hard'
         };
         
-        // Сабақ белгішелері
+        // Сабақ белгішелері мен кластары
         const lessonIcons = {
-            'addition': 'fa-plus-circle',
-            'subtraction': 'fa-minus-circle',
-            'multiplication': 'fa-times-circle',
-            'division': 'fa-divide'
-        };
-        
-        // Сабақ кластары
-        const lessonClasses = {
-            'addition': 'addition',
-            'subtraction': 'subtraction',
-            'multiplication': 'multiplication',
-            'division': 'division'
+            'addition': { icon: 'fa-plus-circle', class: 'addition' },
+            'subtraction': { icon: 'fa-minus-circle', class: 'subtraction' },
+            'multiplication': { icon: 'fa-times-circle', class: 'multiplication' },
+            'division': { icon: 'fa-divide', class: 'division' },
+            'brackets': { icon: 'fa-parentheses', class: 'brackets' },
+            'mixed': { icon: 'fa-random', class: 'mixed' }
         };
         
         // Ойын айнымалылары
@@ -505,12 +539,13 @@
             loadUserAvatar();
             
             // Тапсырма суретін орнату
-            document.getElementById('taskImage').innerHTML = '<i class="fas ' + lessonIcons[lesson] + ' ' + lessonClasses[lesson] + '"></i>';
+            const lessonIcon = lessonIcons[lesson];
+            document.getElementById('taskImage').innerHTML = `<i class="fas ${lessonIcon.icon} ${lessonIcon.class}"></i>`;
             
             // Таймерді бастау
             startTimer();
             
-            // Ойынды бастау
+            // Ойынды бастау (сабаққа байланысты)
             startGame();
         });
         
@@ -570,10 +605,10 @@
         // Артқа түймесі
         document.getElementById('backButton').addEventListener('click', function() {
             stopTimer();
-            window.history.back();
+            window.location.href = 'lessons.html?username=' + encodeURIComponent(username) + '&age=' + age;
         });
         
-        // Тапсырмаларды жасау функциясы
+        // Тапсырмаларды жасау функциясы (сабаққа байланысты)
         function generateTasks() {
             tasks = [];
             
@@ -583,66 +618,213 @@
             else if (difficulty === 'hard') totalTasks = 10;
             
             for (let i = 0; i < totalTasks; i++) {
-                let task = generateTask();
-                tasks.push(task);
+                let task;
+                try {
+                    // Сабақ түріне байланысты тапсырма жасау
+                    switch(lesson) {
+                        case 'addition':
+                            task = generateAdditionTask();
+                            break;
+                        case 'subtraction':
+                            task = generateSubtractionTask();
+                            break;
+                        case 'multiplication':
+                            task = generateMultiplicationTask();
+                            break;
+                        case 'division':
+                            task = generateDivisionTask();
+                            break;
+                        case 'brackets':
+                            task = generateBracketsTask();
+                            break;
+                        case 'mixed':
+                            task = generateMixedTask();
+                            break;
+                        default:
+                            task = generateAdditionTask();
+                    }
+                    tasks.push(task);
+                } catch (error) {
+                    console.error("Тапсырма жасау кезінде қате:", error);
+                    // Қате болған жағдайда қарапайым қосу тапсырмасын қосыңыз
+                    tasks.push(generateSimpleTask());
+                }
             }
         }
         
-        // Бір тапсырма жасау
-        function generateTask() {
-            let num1, num2, answer, question;
-            let wrongAnswers = [];
+        // Қарапайым тапсырма (қате болған жағдайда)
+        function generateSimpleTask() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const answer = num1 + num2;
+            const question = `${num1} + ${num2} = ?`;
             
-            // Қиындық бойынша диапазондар
+            return createTask(question, answer, 20);
+        }
+        
+        // Қосу тапсырмасы
+        function generateAdditionTask() {
+            // Қиындыққа қарай диапазон
             let maxNum = 10;
             if (difficulty === 'medium') maxNum = 20;
-            if (difficulty === 'hard') maxNum = 100;
+            if (difficulty === 'hard') maxNum = 50;
             
-            // Операцияны таңдау
-            switch(lesson) {
-                case 'addition':
-                    num1 = Math.floor(Math.random() * maxNum) + 1;
-                    num2 = Math.floor(Math.random() * maxNum) + 1;
-                    answer = num1 + num2;
-                    question = num1 + ' + ' + num2 + ' = ?';
-                    break;
-                    
-                case 'subtraction':
-                    num1 = Math.floor(Math.random() * maxNum) + 1;
-                    num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
-                    answer = num1 - num2;
-                    question = num1 + ' - ' + num2 + ' = ?';
-                    break;
-                    
-                case 'multiplication':
-                    num1 = Math.floor(Math.random() * (maxNum/2)) + 1;
-                    num2 = Math.floor(Math.random() * (maxNum/2)) + 1;
-                    answer = num1 * num2;
-                    question = num1 + ' × ' + num2 + ' = ?';
-                    break;
-                    
-                case 'division':
-                    answer = Math.floor(Math.random() * (maxNum/2)) + 1;
-                    num2 = Math.floor(Math.random() * (maxNum/2)) + 1;
-                    num1 = answer * num2;
-                    question = num1 + ' ÷ ' + num2 + ' = ?';
-                    break;
+            const num1 = Math.floor(Math.random() * maxNum) + 1;
+            const num2 = Math.floor(Math.random() * maxNum) + 1;
+            const answer = num1 + num2;
+            const question = `${num1} + ${num2} = ?`;
+            
+            return createTask(question, answer, maxNum * 2);
+        }
+        
+        // Алу тапсырмасы
+        function generateSubtractionTask() {
+            // Қиындыққа қарай диапазон
+            let maxNum = 10;
+            if (difficulty === 'medium') maxNum = 20;
+            if (difficulty === 'hard') maxNum = 50;
+            
+            const num1 = Math.floor(Math.random() * maxNum) + 1;
+            const num2 = Math.floor(Math.random() * num1) + 1;
+            const answer = num1 - num2;
+            const question = `${num1} - ${num2} = ?`;
+            
+            return createTask(question, answer, maxNum);
+        }
+        
+        // Көбейту тапсырмасы
+        function generateMultiplicationTask() {
+            // Қиындыққа қарай диапазон
+            let maxNum = 5;
+            if (difficulty === 'medium') maxNum = 8;
+            if (difficulty === 'hard') maxNum = 12;
+            
+            const num1 = Math.floor(Math.random() * maxNum) + 1;
+            const num2 = Math.floor(Math.random() * maxNum) + 1;
+            const answer = num1 * num2;
+            const question = `${num1} × ${num2} = ?`;
+            
+            return createTask(question, answer, maxNum * maxNum);
+        }
+        
+        // Бөлу тапсырмасы
+        function generateDivisionTask() {
+            // Қиындыққа қарай диапазон
+            let maxNum = 5;
+            if (difficulty === 'medium') maxNum = 8;
+            if (difficulty === 'hard') maxNum = 10;
+            
+            const answer = Math.floor(Math.random() * maxNum) + 1;
+            const num2 = Math.floor(Math.random() * maxNum) + 1;
+            const num1 = answer * num2;
+            const question = `${num1} ÷ ${num2} = ?`;
+            
+            return createTask(question, answer, maxNum);
+        }
+        
+        // Жақшамен жұмыс тапсырмасы
+        function generateBracketsTask() {
+            // Қиындыққа қарай диапазон
+            let maxNum = 10;
+            if (difficulty === 'medium') maxNum = 15;
+            if (difficulty === 'hard') maxNum = 20;
+            
+            const num1 = Math.floor(Math.random() * maxNum) + 1;
+            const num2 = Math.floor(Math.random() * maxNum) + 1;
+            const num3 = Math.floor(Math.random() * maxNum) + 1;
+            
+            // Кездейсоқ жақша орнын таңдау
+            const type = Math.floor(Math.random() * 3);
+            let question, answer;
+            
+            if (type === 0) {
+                // (a + b) + c
+                question = `(${num1} + ${num2}) + ${num3} = ?`;
+                answer = (num1 + num2) + num3;
+            } else if (type === 1) {
+                // a + (b + c)
+                question = `${num1} + (${num2} + ${num3}) = ?`;
+                answer = num1 + (num2 + num3);
+            } else {
+                // (a - b) + c
+                const larger = Math.max(num1, num2);
+                const smaller = Math.min(num1, num2);
+                question = `(${larger} - ${smaller}) + ${num3} = ?`;
+                answer = (larger - smaller) + num3;
             }
+            
+            return createTask(question, answer, maxNum * 3);
+        }
+        
+        // Аралас есептер
+        function generateMixedTask() {
+            // Қиындыққа қарай диапазон
+            let maxNum = 10;
+            if (difficulty === 'medium') maxNum = 15;
+            if (difficulty === 'hard') maxNum = 20;
+            
+            let question, answer;
+            const operationType = Math.floor(Math.random() * 3);
+            
+            if (operationType === 0) {
+                // a + b × c
+                const a = Math.floor(Math.random() * maxNum) + 1;
+                const b = Math.floor(Math.random() * 10) + 1;
+                const c = Math.floor(Math.random() * 10) + 1;
+                question = `${a} + ${b} × ${c} = ?`;
+                answer = a + (b * c);
+            } else if (operationType === 1) {
+                // a × b - c
+                const a = Math.floor(Math.random() * 10) + 1;
+                const b = Math.floor(Math.random() * 10) + 1;
+                const c = Math.floor(Math.random() * maxNum) + 1;
+                question = `${a} × ${b} - ${c} = ?`;
+                answer = (a * b) - c;
+                if (answer < 0) {
+                    // Жауап теріс болмауы керек
+                    c = Math.floor(Math.random() * (a * b - 1)) + 1;
+                    question = `${a} × ${b} - ${c} = ?`;
+                    answer = (a * b) - c;
+                }
+            } else {
+                // (a + b) × c
+                const a = Math.floor(Math.random() * maxNum) + 1;
+                const b = Math.floor(Math.random() * maxNum) + 1;
+                const c = Math.floor(Math.random() * 5) + 1;
+                question = `(${a} + ${b}) × ${c} = ?`;
+                answer = (a + b) * c;
+            }
+            
+            return createTask(question, answer, maxNum * 5);
+        }
+        
+        // Жалпы тапсырма құру функциясы
+        function createTask(question, answer, maxRange) {
+            const wrongAnswers = [];
             
             // Қате жауаптар жасау
             for (let i = 0; i < 3; i++) {
                 let wrongAnswer;
+                let attempts = 0;
                 do {
-                    wrongAnswer = answer + Math.floor(Math.random() * 10) - 5;
-                    if (wrongAnswer < 0) wrongAnswer = Math.abs(wrongAnswer) + 1;
+                    const offset = Math.floor(Math.random() * 6) - 3; // -3 to +3
+                    wrongAnswer = answer + offset;
+                    if (wrongAnswer < 0) wrongAnswer = Math.abs(offset) + 1;
                     if (wrongAnswer === 0) wrongAnswer = 1;
+                    if (wrongAnswer === answer) wrongAnswer += 2;
+                    
+                    attempts++;
+                    if (attempts > 10) {
+                        // Көп әрекеттенгеннен кейін, басқаша жасау
+                        wrongAnswer = Math.floor(Math.random() * maxRange) + 1;
+                    }
                 } while (wrongAnswer === answer || wrongAnswers.includes(wrongAnswer));
                 wrongAnswers.push(wrongAnswer);
             }
             
             // Барлық жауаптарды араластыру
             let allAnswers = [answer, ...wrongAnswers];
-            allAnswers.sort(function() { return Math.random() - 0.5; });
+            allAnswers.sort(() => Math.random() - 0.5);
             
             return {
                 question: question,
@@ -653,27 +835,48 @@
         
         // Ойынды бастау
         function startGame() {
-            currentTaskIndex = 0;
-            score = 0;
-            generateTasks();
-            showTask();
-            updateProgress();
+            try {
+                currentTaskIndex = 0;
+                score = 0;
+                generateTasks();
+                showTask();
+                updateProgress();
+            } catch (error) {
+                console.error("Ойынды бастау кезінде қате:", error);
+                alert("Ойынды бастау кезінде қате пайда болды. Бетті қайта жүктеңіз.");
+            }
         }
         
         // Тапсырманы көрсету
         function showTask() {
+            if (!tasks || tasks.length === 0) {
+                console.error("Тапсырмалар жоқ!");
+                return;
+            }
+            
             const task = tasks[currentTaskIndex];
+            if (!task) {
+                console.error("Ағымдағы тапсырма жоқ!");
+                return;
+            }
+            
             document.getElementById('taskText').textContent = task.question;
             
             // Жауап опцияларын жасау
             const answerOptions = document.getElementById('answerOptions');
             answerOptions.innerHTML = '';
             
-            task.answers.forEach(function(answer) {
+            if (!task.answers || task.answers.length === 0) {
+                console.error("Жауаптар жоқ!");
+                return;
+            }
+            
+            task.answers.forEach(function(answer, index) {
                 const button = document.createElement('button');
                 button.className = 'answer-btn';
                 button.textContent = answer;
                 button.dataset.value = answer;
+                button.dataset.index = index;
                 button.addEventListener('click', handleAnswerClick);
                 answerOptions.appendChild(button);
             });
@@ -693,9 +896,10 @@
             // Барлық түймелерді өшіру
             answerButtons.forEach(function(btn) {
                 btn.disabled = true;
-                if (parseInt(btn.dataset.value) === correctAnswer) {
+                const btnValue = parseInt(btn.dataset.value);
+                if (btnValue === correctAnswer) {
                     btn.classList.add('correct');
-                } else if (parseInt(btn.dataset.value) === selectedAnswer) {
+                } else if (btnValue === selectedAnswer) {
                     btn.classList.add('wrong');
                 }
             });
@@ -752,47 +956,55 @@
         
         // Ойын нәтижесін сақтау
         function saveGameResult() {
-            const gameResult = {
-                date: new Date().toISOString(),
-                lesson: lesson,
-                difficulty: difficulty,
-                score: score,
-                totalTasks: totalTasks,
-                time: totalTime,
-                percentage: Math.round((score / totalTasks) * 100)
-            };
-            
-            // Сақталған нәтижелерді алу
-            let gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-            gameHistory.push(gameResult);
-            
-            // Соңғы 50 ойынды ғана сақтау
-            if (gameHistory.length > 50) {
-                gameHistory = gameHistory.slice(-50);
+            try {
+                const gameResult = {
+                    date: new Date().toISOString(),
+                    lesson: lesson,
+                    difficulty: difficulty,
+                    score: score,
+                    totalTasks: totalTasks,
+                    time: totalTime,
+                    percentage: Math.round((score / totalTasks) * 100)
+                };
+                
+                // Сақталған нәтижелерді алу
+                let gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+                gameHistory.push(gameResult);
+                
+                // Соңғы 50 ойынды ғана сақтау
+                if (gameHistory.length > 50) {
+                    gameHistory = gameHistory.slice(-50);
+                }
+                
+                localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+                
+                // Ең жақсы нәтижені жаңарту
+                updateBestScore(gameResult);
+            } catch (error) {
+                console.error("Нәтижені сақтау кезінде қате:", error);
             }
-            
-            localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
-            
-            // Ең жақсы нәтижені жаңарту
-            updateBestScore(gameResult);
         }
         
         // Ең жақсы нәтижені жаңарту
         function updateBestScore(gameResult) {
-            const bestScores = JSON.parse(localStorage.getItem('bestScores') || '{}');
-            const key = lesson + '_' + difficulty;
-            
-            if (!bestScores[key] || 
-                gameResult.percentage > bestScores[key].percentage ||
-                (gameResult.percentage === bestScores[key].percentage && gameResult.time < bestScores[key].time)) {
-                bestScores[key] = {
-                    score: gameResult.score,
-                    totalTasks: gameResult.totalTasks,
-                    time: gameResult.time,
-                    percentage: gameResult.percentage,
-                    date: gameResult.date
-                };
-                localStorage.setItem('bestScores', JSON.stringify(bestScores));
+            try {
+                const bestScores = JSON.parse(localStorage.getItem('bestScores') || '{}');
+                const key = lesson + '_' + difficulty;
+                
+                if (!bestScores[key] || 
+                    gameResult.percentage > bestScores[key].percentage ||
+                    (gameResult.percentage === bestScores[key].percentage && gameResult.time < bestScores[key].time)) {
+                    bestScores[key] = {
+                        score: gameResult.score,
+                        totalTasks: gameResult.totalTasks,
+                        time: gameResult.time,
+                        percentage: gameResult.percentage,
+                        date: gameResult.date
+                    };
+                    localStorage.setItem('bestScores', JSON.stringify(bestScores));
+                }
+            } catch (error) {
+                console.error("Ең жақсы нәтижені сақтау кезінде қате:", error);
             }
         }
         
@@ -856,26 +1068,6 @@
         document.getElementById('homeButton').addEventListener('click', function() {
             window.location.href = 'index.html?username=' + encodeURIComponent(username) + '&age=' + age;
         });
-        
-        // FontAwesome иконки без интернета
-        const style = document.createElement('style');
-        style.textContent = `
-            .fas {
-                font-family: 'Font Awesome 6 Free';
-                font-weight: 900;
-            }
-            .fa-plus-circle:before { content: "\\f055"; }
-            .fa-minus-circle:before { content: "\\f056"; }
-            .fa-times-circle:before { content: "\\f057"; }
-            .fa-divide:before { content: "\\f529"; }
-            .fa-arrow-left:before { content: "\\f060"; }
-            .fa-clock:before { content: "\\f017"; }
-            .fa-stopwatch:before { content: "\\f2f2"; }
-            .fa-redo:before { content: "\\f01e"; }
-            .fa-user:before { content: "\\f007"; }
-            .fa-home:before { content: "\\f015"; }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
