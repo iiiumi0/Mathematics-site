@@ -57,6 +57,30 @@
             box-shadow: 0 6px 15px rgba(255, 123, 156, 0.4);
         }
         
+        /* Кнопка выхода */
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff7b9c, #ff9a8b);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 123, 156, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 123, 156, 0.4);
+        }
+        
         .profile-card {
             background: white;
             border-radius: 25px;
@@ -84,6 +108,13 @@
             object-fit: cover;
             border: 5px solid #ff7b9c;
             margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 123, 156, 0.4);
         }
         
         .change-avatar-btn {
@@ -127,6 +158,24 @@
         .detail-item i {
             color: #6ab1ff;
             width: 20px;
+        }
+        
+        .edit-btn {
+            background: none;
+            border: none;
+            color: #6ab1ff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn:hover {
+            color: #ff7b9c;
+            transform: translateY(-2px);
         }
         
         .stats-grid {
@@ -318,6 +367,121 @@
             background: linear-gradient(135deg, #ffcc00, #ffdd44);
         }
         
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-title {
+            color: #ff7b9c;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .modal-message {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e6f2ff;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: #6ab1ff;
+            box-shadow: 0 0 0 3px rgba(106, 177, 255, 0.2);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .modal-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .modal-btn.confirm {
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+        }
+        
+        .modal-btn.cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .modal-btn.danger {
+            background: linear-gradient(135deg, #ff7b9c, #ff9a8b);
+            color: white;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Радио-кнопки для пола */
+        .gender-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .gender-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .gender-radio {
+            width: 18px;
+            height: 18px;
+        }
+        
         @media (max-width: 768px) {
             .profile-header {
                 flex-direction: column;
@@ -339,6 +503,14 @@
             .action-btn {
                 min-width: 100%;
             }
+            
+            .logout-btn {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 20px;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -346,6 +518,69 @@
     <button class="back-btn" id="backButton">
         ← Артқа
     </button>
+    
+    <button class="logout-btn" id="logoutButton">
+        🚪 Шығу
+    </button>
+    
+    <!-- Модальное окно выхода -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Шығу растауы</h3>
+            <p class="modal-message" id="logoutMessage">
+                Сіз шынымен аккаунтыңыздан шығып кеткіңіз келе ме?
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-btn danger" id="confirmLogout">Иә, шығу</button>
+                <button class="modal-btn cancel" id="cancelLogout">Жоқ, қалу</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно изменения имени -->
+    <div class="modal-overlay" id="nameModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Атыңызды өзгерту</h3>
+            <input type="text" class="modal-input" id="newNameInput" placeholder="Жаңа атыңызды енгізіңіз" maxlength="20">
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" id="saveNameBtn">Сақтау</button>
+                <button class="modal-btn cancel" id="cancelNameBtn">Болдырмау</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно изменения возраста -->
+    <div class="modal-overlay" id="ageModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Жасыңызды өзгерту</h3>
+            <input type="number" class="modal-input" id="newAgeInput" placeholder="Жасыңызды енгізіңіз" min="4" max="12">
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" id="saveAgeBtn">Сақтау</button>
+                <button class="modal-btn cancel" id="cancelAgeBtn">Болдырмау</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно изменения пола -->
+    <div class="modal-overlay" id="genderModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Жынысыңызды өзгерту</h3>
+            <div class="gender-options">
+                <label class="gender-option">
+                    <input type="radio" name="gender" value="Ұл бала" class="gender-radio" id="genderBoy">
+                    <span>Ұл бала</span>
+                </label>
+                <label class="gender-option">
+                    <input type="radio" name="gender" value="Қыз бала" class="gender-radio" id="genderGirl">
+                    <span>Қыз бала</span>
+                </label>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" id="saveGenderBtn">Сақтау</button>
+                <button class="modal-btn cancel" id="cancelGenderBtn">Болдырмау</button>
+            </div>
+        </div>
+    </div>
     
     <div class="profile-container">
         <div class="header">
@@ -367,12 +602,21 @@
                     <div class="profile-details">
                         <div class="detail-item">
                             <span>👤 Аты: <span id="userNameText">Бала</span></span>
+                            <button class="edit-btn" id="editNameBtn">
+                                ✏️ Өзгерту
+                            </button>
                         </div>
                         <div class="detail-item">
                             <span>🎂 Жасы: <span id="userAge">7</span> жаста</span>
+                            <button class="edit-btn" id="editAgeBtn">
+                                ✏️ Өзгерту
+                            </button>
                         </div>
                         <div class="detail-item">
                             <span>⚥ Жынысы: <span id="userGender">Ұл бала</span></span>
+                            <button class="edit-btn" id="editGenderBtn">
+                                ✏️ Өзгерту
+                            </button>
                         </div>
                         <div class="detail-item">
                             <span>📅 Тіркелген: <span id="regDate">Бүгін</span></span>
@@ -444,8 +688,8 @@
     <script>
         // URL параметрлері
         const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('username') || 'Бала';
-        const age = urlParams.get('age') || 7;
+        let username = urlParams.get('username') || 'Бала';
+        let age = urlParams.get('age') || 7;
         
         // Пользовательские данные
         let userData = {
@@ -453,6 +697,18 @@
             age: age,
             gender: 'Ұл бала',
             registrationDate: new Date().toLocaleDateString('kk-KZ')
+        };
+        
+        // Словарь названий занятий на казахском
+        const lessonNames = {
+            'addition': 'Қосу',
+            'subtraction': 'Алу',
+            'multiplication': 'Көбейту',
+            'division': 'Бөлу',
+            'table': 'Көбейту кестесі',
+            'brackets': 'Жақшамен жұмыс',
+            'mixed': 'Аралас есептер',
+            'count': 'Жалпы санау'
         };
         
         // Бетті инициализациялау
@@ -463,16 +719,34 @@
             loadProgressCharts();
             
             // Кнопкаларға әсер ету
+            initEventListeners();
+        });
+        
+        // Инициализация обработчиков событий
+        function initEventListeners() {
+            // Кнопка "Артқа"
             document.getElementById('backButton').addEventListener('click', function() {
                 window.history.back();
             });
             
+            // Кнопка выхода
+            document.getElementById('logoutButton').addEventListener('click', function() {
+                showLogoutModal();
+            });
+            
+            // Модальное окно выхода
+            document.getElementById('confirmLogout').addEventListener('click', logoutUser);
+            document.getElementById('cancelLogout').addEventListener('click', function() {
+                document.getElementById('logoutModal').style.display = 'none';
+            });
+            
+            // Кнопки действий
             document.getElementById('playButton').addEventListener('click', function() {
-                window.location.href = `lessons.html?username=${encodeURIComponent(username)}&age=${age}`;
+                window.location.href = `lessons.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
             
             document.getElementById('homeButton').addEventListener('click', function() {
-                window.location.href = `index.html?username=${encodeURIComponent(username)}&age=${age}`;
+                window.location.href = `index.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
             
             document.getElementById('resetButton').addEventListener('click', function() {
@@ -506,32 +780,147 @@
                     reader.readAsDataURL(file);
                 }
             });
-        });
+            
+            // Аватарды клик для просмотра
+            document.getElementById('profileAvatar').addEventListener('click', function() {
+                document.getElementById('avatarInput').click();
+            });
+            
+            // Редактирование имени
+            document.getElementById('editNameBtn').addEventListener('click', function() {
+                document.getElementById('newNameInput').value = userData.name;
+                document.getElementById('nameModal').style.display = 'flex';
+            });
+            
+            document.getElementById('saveNameBtn').addEventListener('click', function() {
+                const newName = document.getElementById('newNameInput').value.trim();
+                if (newName && newName.length >= 2) {
+                    userData.name = newName;
+                    localStorage.setItem('userName', newName);
+                    updateUserInfo();
+                    document.getElementById('nameModal').style.display = 'none';
+                    alert('Атыңыз сәтті өзгертілді!');
+                } else {
+                    alert('Атыңыз кемінде 2 әріптен тұруы керек!');
+                }
+            });
+            
+            document.getElementById('cancelNameBtn').addEventListener('click', function() {
+                document.getElementById('nameModal').style.display = 'none';
+            });
+            
+            // Редактирование возраста
+            document.getElementById('editAgeBtn').addEventListener('click', function() {
+                document.getElementById('newAgeInput').value = userData.age;
+                document.getElementById('ageModal').style.display = 'flex';
+            });
+            
+            document.getElementById('saveAgeBtn').addEventListener('click', function() {
+                const newAge = parseInt(document.getElementById('newAgeInput').value);
+                if (newAge >= 4 && newAge <= 12) {
+                    userData.age = newAge;
+                    localStorage.setItem('userAge', newAge);
+                    updateUserInfo();
+                    document.getElementById('ageModal').style.display = 'none';
+                    alert('Жасыңыз сәтті өзгертілді!');
+                } else {
+                    alert('Жасыңыз 4 пен 12 арасында болуы керек!');
+                }
+            });
+            
+            document.getElementById('cancelAgeBtn').addEventListener('click', function() {
+                document.getElementById('ageModal').style.display = 'none';
+            });
+            
+            // Редактирование пола
+            document.getElementById('editGenderBtn').addEventListener('click', function() {
+                // Установить текущее значение
+                if (userData.gender === 'Ұл бала') {
+                    document.getElementById('genderBoy').checked = true;
+                } else {
+                    document.getElementById('genderGirl').checked = true;
+                }
+                document.getElementById('genderModal').style.display = 'flex';
+            });
+            
+            document.getElementById('saveGenderBtn').addEventListener('click', function() {
+                const selectedGender = document.querySelector('input[name="gender"]:checked');
+                if (selectedGender) {
+                    userData.gender = selectedGender.value;
+                    localStorage.setItem('userGender', selectedGender.value);
+                    updateUserInfo();
+                    document.getElementById('genderModal').style.display = 'none';
+                    alert('Жынысыңыз сәтті өзгертілді!');
+                }
+            });
+            
+            document.getElementById('cancelGenderBtn').addEventListener('click', function() {
+                document.getElementById('genderModal').style.display = 'none';
+            });
+            
+            // Закрытие модальных окон при клике вне их
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+        }
         
         // Пайдаланушы деректерін жүктеу
         function loadUserData() {
-            // Аты
+            // Загрузить сохраненные данные из localStorage
+            const savedName = localStorage.getItem('userName');
+            const savedAge = localStorage.getItem('userAge');
+            const savedGender = localStorage.getItem('userGender');
+            const savedRegDate = localStorage.getItem('userRegDate');
+            
+            // Обновить userData
+            if (savedName) userData.name = savedName;
+            if (savedAge) userData.age = savedAge;
+            if (savedGender) userData.gender = savedGender;
+            if (savedRegDate) userData.registrationDate = savedRegDate;
+            else {
+                userData.registrationDate = new Date().toLocaleDateString('kk-KZ');
+                localStorage.setItem('userRegDate', userData.registrationDate);
+            }
+            
+            // Обновить отображение
+            updateUserInfo();
+        }
+        
+        // Обновить информацию пользователя на странице
+        function updateUserInfo() {
+            // Имя
             document.getElementById('profileName').textContent = userData.name;
             document.getElementById('userNameText').textContent = userData.name;
             document.getElementById('userAge').textContent = userData.age;
+            document.getElementById('userGender').textContent = userData.gender;
             document.getElementById('regDate').textContent = userData.registrationDate;
             
-            // Жынысты сақталған деректерден алу
-            const savedGender = localStorage.getItem('userGender');
-            if (savedGender) {
-                userData.gender = savedGender;
-            }
-            document.getElementById('userGender').textContent = userData.gender;
+            // Сообщение в модальном окне выхода
+            document.getElementById('logoutMessage').textContent = 
+                `${userData.name}, сіз шынымен аккаунтыңыздан шығып кеткіңіз келе ме?`;
             
             // Аватарды жүктеу
+            loadAvatar();
+        }
+        
+        // Загрузить аватар
+        function loadAvatar() {
             const savedAvatar = localStorage.getItem('userAvatar');
             const avatarImg = document.getElementById('profileAvatar');
             
             if (savedAvatar) {
                 avatarImg.src = savedAvatar;
+                avatarImg.style.display = 'block';
+                avatarImg.style.backgroundColor = 'transparent';
+                avatarImg.style.color = 'transparent';
+                avatarImg.textContent = '';
             } else {
                 // Әдепкі аватар (тексттік версия)
-                avatarImg.alt = username;
+                avatarImg.alt = userData.name;
                 avatarImg.style.backgroundColor = '#6ab1ff';
                 avatarImg.style.display = 'flex';
                 avatarImg.style.alignItems = 'center';
@@ -539,12 +928,12 @@
                 avatarImg.style.color = 'white';
                 avatarImg.style.fontWeight = 'bold';
                 avatarImg.style.fontSize = '40px';
-                avatarImg.textContent = username.charAt(0).toUpperCase();
+                avatarImg.textContent = userData.name.charAt(0).toUpperCase();
                 avatarImg.src = '';
             }
         }
         
-        // Ойын тарихын жүктеу
+        // Ойын тарихын жүктеу (ИСПРАВЛЕНО - все на казахском)
         function loadGameHistory() {
             const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
             const container = document.getElementById('historyTableContainer');
@@ -573,7 +962,8 @@
             
             recentGames.forEach(game => {
                 const date = new Date(game.date).toLocaleDateString('kk-KZ');
-                const lessonName = getLessonName(game.lesson);
+                // ИСПРАВЛЕНО: используем словарь для перевода названий занятий
+                const lessonName = lessonNames[game.lesson] || game.lesson;
                 const difficultyName = getDifficultyName(game.difficulty);
                 const difficultyClass = getDifficultyClass(game.difficulty);
                 const timeFormatted = formatTime(game.time);
@@ -630,7 +1020,7 @@
             document.getElementById('successRate').textContent = successRate + '%';
         }
         
-        // Прогресс графиктерін жүктеу
+        // Прогресс графиктерін жүктеу (ИСПРАВЛЕНО - все на казахском)
         function loadProgressCharts() {
             const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
             const container = document.getElementById('progressChart');
@@ -640,12 +1030,16 @@
                 return;
             }
             
-            // Сабақтар бойынша статистика
+            // Сабақтар бойынша статистика (ИСПРАВЛЕНО - названия на казахском)
             const lessonStats = {
                 'addition': { name: 'Қосу', total: 0, correct: 0 },
                 'subtraction': { name: 'Алу', total: 0, correct: 0 },
                 'multiplication': { name: 'Көбейту', total: 0, correct: 0 },
-                'division': { name: 'Бөлу', total: 0, correct: 0 }
+                'division': { name: 'Бөлу', total: 0, correct: 0 },
+                'table': { name: 'Көбейту кестесі', total: 0, correct: 0 },
+                'brackets': { name: 'Жақшамен жұмыс', total: 0, correct: 0 },
+                'mixed': { name: 'Аралас есептер', total: 0, correct: 0 },
+                'count': { name: 'Жалпы санау', total: 0, correct: 0 }
             };
             
             gameHistory.forEach(game => {
@@ -675,6 +1069,7 @@
             html += '<div class="chart-container">';
             html += '<h4 class="chart-title">Сабақтар бойынша сәттілік</h4>';
             
+            // Показываем только те занятия, по которым есть статистика
             Object.entries(lessonStats).forEach(([key, stat]) => {
                 if (stat.total > 0) {
                     const percentage = Math.round((stat.correct / stat.total) * 100);
@@ -735,15 +1130,29 @@
             }, 300);
         }
         
+        // Показать модальное окно выхода
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'flex';
+        }
+        
+        // Выход из аккаунта
+        function logoutUser() {
+            // Сохранить последнюю сессию
+            const lastSession = {
+                date: new Date().toISOString(),
+                page: 'profile.html',
+                username: userData.name
+            };
+            localStorage.setItem('lastSession', JSON.stringify(lastSession));
+            
+            // Перенаправить на главную страницу
+            window.location.href = 'index.html';
+        }
+        
         // Көмекші функциялар
         function getLessonName(lessonKey) {
-            const lessons = {
-                'addition': 'Қосу',
-                'subtraction': 'Алу',
-                'multiplication': 'Көбейту',
-                'division': 'Бөлу'
-            };
-            return lessons[lessonKey] || lessonKey;
+            // ИСПРАВЛЕНО: используем словарь lessonNames
+            return lessonNames[lessonKey] || lessonKey;
         }
         
         function getDifficultyName(difficulty) {
