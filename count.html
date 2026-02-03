@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Көңілді математика - Сандарды санау</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f9ff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 150, 0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px dashed #00cec9;
+        }
+        
+        .lesson-info {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .lesson-title {
+            color: #00cec9;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(106, 177, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .user-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(106, 177, 255, 0.4);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        .back-btn {
+            background-color: #00cec9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 206, 201, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .counting-section {
+            background-color: #f9fdff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 3px solid #e6f2ff;
+            text-align: center;
+        }
+        
+        .section-title {
+            color: #00cec9;
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+        
+        .range-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .range-btn {
+            background: #00cec9;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 206, 201, 0.3);
+        }
+        
+        .range-btn:hover {
+            background: #00b894;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.4);
+        }
+        
+        .range-btn.selected {
+            background: #0984e3;
+            box-shadow: 0 4px 12px rgba(9, 132, 227, 0.4);
+        }
+        
+        .counting-exercise {
+            background: linear-gradient(135deg, #e6f7ff, #f0f9ff);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid #6ab1ff;
+        }
+        
+        .exercise-title {
+            color: #0984e3;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .number-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .number-box {
+            background: white;
+            border: 3px solid #00cec9;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            min-width: 80px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 206, 201, 0.2);
+        }
+        
+        .number-box.empty {
+            background: #f8f9fa;
+            border: 3px dashed #00cec9;
+            color: #999;
+        }
+        
+        .number-box.question {
+            background: #fff9e6;
+            border-color: #ffcc00;
+            color: #ff7b5c;
+        }
+        
+        .answer-input {
+            width: 120px;
+            padding: 15px;
+            font-size: 2rem;
+            text-align: center;
+            border: 3px solid #00cec9;
+            border-radius: 10px;
+            margin: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .check-btn {
+            background: linear-gradient(135deg, #00cec9, #00b894);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 206, 201, 0.3);
+        }
+        
+        .check-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 206, 201, 0.4);
+        }
+        
+        .feedback {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 50px;
+            text-align: center;
+        }
+        
+        .correct-feedback { color: #2ecc71; }
+        .wrong-feedback { color: #e74c3c; }
+        
+        .next-btn {
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.3rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 15px;
+            transition: all 0.3s;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .instructions {
+            background: #fff9e6;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 4px solid #ffcc00;
+        }
+        
+        .instructions h3 {
+            color: #ff7b5c;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            text-align: left;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+        
+        .instructions strong {
+            color: #00cec9;
+        }
+        
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e6f2ff;
+        }
+        
+        .grid-number {
+            background: white;
+            border: 2px solid #00cec9;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.3s;
+        }
+        
+        .grid-number:hover {
+            background: #e6f7ff;
+            transform: scale(1.05);
+        }
+        
+        .grid-number.missing {
+            background: #fff9e6;
+            border-color: #ffcc00;
+            color: #ff7b5c;
+            font-size: 1.4rem;
+        }
+        
+        .missing-number-input {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid #ffcc00;
+            border-radius: 8px;
+            margin: 10px;
+            font-weight: bold;
+            color: #ff7b5c;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .number-box {
+                padding: 12px 20px;
+                font-size: 2rem;
+                min-width: 70px;
+            }
+            
+            .answer-input {
+                width: 100px;
+                font-size: 1.8rem;
+                padding: 12px;
+            }
+            
+            .range-btn {
+                padding: 10px 20px;
+                font-size: 1.2rem;
+            }
+            
+            .number-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            
+            .grid-number {
+                padding: 8px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .number-line {
+                gap: 10px;
+            }
+            
+            .number-box {
+                padding: 10px 15px;
+                font-size: 1.8rem;
+                min-width: 60px;
+            }
+            
+            .range-btn {
+                padding: 8px 15px;
+                font-size: 1.1rem;
+            }
+            
+            .check-btn {
+                padding: 12px 25px;
+                font-size: 1.3rem;
+            }
+            
+            .number-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="user-info" id="userInfo">
+        <img id="userAvatar" class="user-avatar" src="" alt="Аватар">
+        <span id="usernameDisplay">Бала</span>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" id="backButton">
+                ← Сабақтарға
+            </button>
+            
+            <div class="lesson-info">
+                <h1 class="lesson-title" id="lessonTitle">Сандарды санау</h1>
+                <p style="color: #666; font-size: 1.2rem;">Санау дағдыларын дамыту</p>
+            </div>
+            
+            <div style="width: 100px;"></div>
+        </div>
+        
+        <div class="counting-section">
+            <h2 class="section-title">Санау тапсырмалары</h2>
+            
+            <div class="range-selector">
+                <button class="range-btn selected" data-range="1-20">1-20</button>
+                <button class="range-btn" data-range="1-50">1-50</button>
+                <button class="range-btn" data-range="1-100">1-100</button>
+            </div>
+            
+            <!-- 1-ші тапсырма: Келесі санды табу -->
+            <div class="counting-exercise" id="nextNumberExercise">
+                <h3 class="exercise-title">Келесі санды табыңыз</h3>
+                <div class="number-line">
+                    <div class="number-box" id="currentNumber1">15</div>
+                    <div style="font-size: 2rem; color: #00cec9;">→</div>
+                    <div class="number-box question" id="nextNumberQuestion">?</div>
+                </div>
+                <input type="number" class="answer-input" id="nextNumberAnswer" placeholder="Жауап">
+                <button class="check-btn" id="checkNextNumber">Тексеру</button>
+                <div class="feedback" id="nextNumberFeedback"></div>
+                <button class="next-btn" id="nextNumberNext">Келесі тапсырма</button>
+            </div>
+            
+            <!-- 2-ші тапсырма: Алдыңғы санды табу -->
+            <div class="counting-exercise" id="prevNumberExercise" style="display: none;">
+                <h3 class="exercise-title">Алдыңғы санды табыңыз</h3>
+                <div class="number-line">
+                    <div class="number-box question" id="prevNumberQuestion">?</div>
+                    <div style="font-size: 2rem; color: #00cec9;">←</div>
+                    <div class="number-box" id="currentNumber2">25</div>
+                </div>
+                <input type="number" class="answer-input" id="prevNumberAnswer" placeholder="Жауап">
+                <button class="check-btn" id="checkPrevNumber">Тексеру</button>
+                <div class="feedback" id="prevNumberFeedback"></div>
+                <button class="next-btn" id="prevNumberNext">Келесі тапсырма</button>
+            </div>
+            
+            <!-- 3-ші тапсырма: Жетіспейтін санды табу -->
+            <div class="counting-exercise" id="missingNumberExercise" style="display: none;">
+                <h3 class="exercise-title">Жетіспейтін санды табыңыз</h3>
+                <div class="number-line">
+                    <div class="number-box" id="numberBeforeMissing">10</div>
+                    <div style="font-size: 2rem; color: #00cec9;">→</div>
+                    <div class="number-box question" id="missingNumberQuestion">?</div>
+                    <div style="font-size: 2rem; color: #00cec9;">→</div>
+                    <div class="number-box" id="numberAfterMissing">12</div>
+                </div>
+                <input type="number" class="answer-input" id="missingNumberAnswer" placeholder="Жауап">
+                <button class="check-btn" id="checkMissingNumber">Тексеру</button>
+                <div class="feedback" id="missingNumberFeedback"></div>
+                <button class="next-btn" id="missingNumberNext">Келесі тапсырма</button>
+            </div>
+            
+            <!-- 4-ші тапсырма: Сан қатарын толтыру -->
+            <div class="counting-exercise" id="numberSequenceExercise" style="display: none;">
+                <h3 class="exercise-title">Сан қатарын толтырыңыз</h3>
+                <div class="number-grid" id="numberSequenceGrid">
+                    <!-- Сандар осында пайда болады -->
+                </div>
+                <input type="number" class="missing-number-input" id="sequenceAnswer" placeholder="Жетіспейтін сан">
+                <button class="check-btn" id="checkSequence">Тексеру</button>
+                <div class="feedback" id="sequenceFeedback"></div>
+                <button class="next-btn" id="sequenceNext">Келесі тапсырма</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>Нұсқаулар:</h3>
+                <ul>
+                    <li><strong>Келесі сан:</strong> Берілген саннан кейін келетін санды табыңыз</li>
+                    <li><strong>Алдыңғы сан:</strong> Берілген саннан бұрын келетін санды табыңыз</li>
+                    <li><strong>Жетіспейтін сан:</strong> Сан қатарындағы жетіспейтін санды табыңыз</li>
+                    <li><strong>Сан қатары:</strong> Жетіспейтін санды толтырыңыз</li>
+                </ul>
+                <p style="text-align: center; margin-top: 15px; color: #0984e3; font-weight: bold;">
+                    Сандарды санау дағдыларыңызды дамытыңыз!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL параметрлері
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'Бала';
+        const age = parseInt(urlParams.get('age')) || 7;
+        
+        // Ойын айнымалылары
+        let currentRange = '1-20';
+        let currentExercise = 1;
+        let correctAnswers = 0;
+        let totalExercises = 0;
+        
+        // Бетті инициализациялау
+        document.addEventListener('DOMContentLoaded', function() {
+            // Панельдерді толтыру
+            document.getElementById('lessonTitle').textContent = 'Сандарды санау';
+            document.getElementById('usernameDisplay').textContent = username;
+            
+            // Аватарды жүктеу
+            loadUserAvatar();
+            
+            // Диапазон түймелерін орнату
+            setupRangeButtons();
+            
+            // Тапсырмаларды баптау
+            setupExercises();
+            
+            // Бастапқы тапсырманы жасау
+            generateNextNumberExercise();
+        });
+        
+        // Аватарды жүктеу
+        function loadUserAvatar() {
+            const savedAvatar = localStorage.getItem('userAvatar');
+            const avatarImg = document.getElementById('userAvatar');
+            
+            if (savedAvatar) {
+                avatarImg.src = savedAvatar;
+            } else {
+                // Әдепкі аватар (тексттік версия)
+                avatarImg.alt = username;
+                avatarImg.style.backgroundColor = '#6ab1ff';
+                avatarImg.style.display = 'flex';
+                avatarImg.style.alignItems = 'center';
+                avatarImg.style.justifyContent = 'center';
+                avatarImg.style.color = 'white';
+                avatarImg.style.fontWeight = 'bold';
+                avatarImg.style.fontSize = '18px';
+                avatarImg.textContent = username.charAt(0).toUpperCase();
+                avatarImg.src = '';
+            }
+            
+            // Профильге өту
+            document.getElementById('userInfo').addEventListener('click', function() {
+                window.location.href = 'profile.html?username=' + encodeURIComponent(username) + '&age=' + age;
+            });
+        }
+        
+        // Артқа түймесі - сабақтар бетіне
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'lessons.html?username=' + encodeURIComponent(username) + '&age=' + age;
+        });
+        
+        // Диапазон түймелерін орнату
+        function setupRangeButtons() {
+            const rangeButtons = document.querySelectorAll('.range-btn');
+            rangeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    currentRange = this.dataset.range;
+                    
+                    // Барлық түймелерден таңдалған класты алып тастау
+                    rangeButtons.forEach(btn => btn.classList.remove('selected'));
+                    
+                    // Ағымдағы түймеге таңдалған класты қосу
+                    this.classList.add('selected');
+                    
+                    // Жаңа тапсырма жасау
+                    generateNextNumberExercise();
+                });
+            });
+        }
+        
+        // Тапсырмаларды баптау
+        function setupExercises() {
+            // Келесі сан тапсырмасы
+            document.getElementById('checkNextNumber').addEventListener('click', checkNextNumber);
+            document.getElementById('nextNumberNext').addEventListener('click', generatePrevNumberExercise);
+            
+            // Алдыңғы сан тапсырмасы
+            document.getElementById('checkPrevNumber').addEventListener('click', checkPrevNumber);
+            document.getElementById('prevNumberNext').addEventListener('click', generateMissingNumberExercise);
+            
+            // Жетіспейтін сан тапсырмасы
+            document.getElementById('checkMissingNumber').addEventListener('click', checkMissingNumber);
+            document.getElementById('missingNumberNext').addEventListener('click', generateNumberSequenceExercise);
+            
+            // Сан қатары тапсырмасы
+            document.getElementById('checkSequence').addEventListener('click', checkSequence);
+            document.getElementById('sequenceNext').addEventListener('click', generateNextNumberExercise);
+            
+            // Enter пернесімен тексеру
+            document.querySelectorAll('.answer-input, .missing-number-input').forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        const id = this.id;
+                        if (id === 'nextNumberAnswer') checkNextNumber();
+                        else if (id === 'prevNumberAnswer') checkPrevNumber();
+                        else if (id === 'missingNumberAnswer') checkMissingNumber();
+                        else if (id === 'sequenceAnswer') checkSequence();
+                    }
+                });
+            });
+        }
+        
+        // Диапазон шекараларын анықтау
+        function getRangeLimits() {
+            switch(currentRange) {
+                case '1-20': return { min: 1, max: 20 };
+                case '1-50': return { min: 1, max: 50 };
+                case '1-100': return { min: 1, max: 100 };
+                default: return { min: 1, max: 20 };
+            }
+        }
+        
+        // Келесі сан тапсырмасын жасау
+        function generateNextNumberExercise() {
+            currentExercise = 1;
+            const limits = getRangeLimits();
+            
+            // Санды анықтау (соңғы саннан басқа)
+            let number = Math.floor(Math.random() * (limits.max - 1)) + limits.min;
+            
+            document.getElementById('currentNumber1').textContent = number;
+            document.getElementById('nextNumberAnswer').value = '';
+            document.getElementById('nextNumberFeedback').textContent = '';
+            
+            // Барлық тапсырмаларды жасыру
+            document.querySelectorAll('.counting-exercise').forEach(ex => {
+                ex.style.display = 'none';
+            });
+            
+            // Ағымдағы тапсырманы көрсету
+            document.getElementById('nextNumberExercise').style.display = 'block';
+            
+            // Кіріс өрісіне фокус
+            document.getElementById('nextNumberAnswer').focus();
+        }
+        
+        // Келесі санды тексеру
+        function checkNextNumber() {
+            const userAnswer = parseInt(document.getElementById('nextNumberAnswer').value);
+            const currentNumber = parseInt(document.getElementById('currentNumber1').textContent);
+            const correctAnswer = currentNumber + 1;
+            const feedback = document.getElementById('nextNumberFeedback');
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = 'Санды енгізіңіз!';
+                feedback.className = 'feedback wrong-feedback';
+                return;
+            }
+            
+            totalExercises++;
+            
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = 'Дұрыс! ' + currentNumber + ' санынан кейін ' + correctAnswer + ' саны келеді! ✨';
+                feedback.className = 'feedback correct-feedback';
+                correctAnswers++;
+            } else {
+                feedback.textContent = 'Қате! Дұрыс жауап: ' + correctAnswer;
+                feedback.className = 'feedback wrong-feedback';
+            }
+        }
+        
+        // Алдыңғы сан тапсырмасын жасау
+        function generatePrevNumberExercise() {
+            currentExercise = 2;
+            const limits = getRangeLimits();
+            
+            // Санды анықтау (бірінші саннан басқа)
+            let number = Math.floor(Math.random() * (limits.max - limits.min)) + limits.min + 1;
+            
+            document.getElementById('currentNumber2').textContent = number;
+            document.getElementById('prevNumberAnswer').value = '';
+            document.getElementById('prevNumberFeedback').textContent = '';
+            
+            // Барлық тапсырмаларды жасыру
+            document.querySelectorAll('.counting-exercise').forEach(ex => {
+                ex.style.display = 'none';
+            });
+            
+            // Ағымдағы тапсырманы көрсету
+            document.getElementById('prevNumberExercise').style.display = 'block';
+            
+            // Кіріс өрісіне фокус
+            document.getElementById('prevNumberAnswer').focus();
+        }
+        
+        // Алдыңғы санды тексеру
+        function checkPrevNumber() {
+            const userAnswer = parseInt(document.getElementById('prevNumberAnswer').value);
+            const currentNumber = parseInt(document.getElementById('currentNumber2').textContent);
+            const correctAnswer = currentNumber - 1;
+            const feedback = document.getElementById('prevNumberFeedback');
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = 'Санды енгізіңіз!';
+                feedback.className = 'feedback wrong-feedback';
+                return;
+            }
+            
+            totalExercises++;
+            
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = 'Дұрыс! ' + currentNumber + ' санының алдында ' + correctAnswer + ' саны келеді! ✨';
+                feedback.className = 'feedback correct-feedback';
+                correctAnswers++;
+            } else {
+                feedback.textContent = 'Қате! Дұрыс жауап: ' + correctAnswer;
+                feedback.className = 'feedback wrong-feedback';
+            }
+        }
+        
+        // Жетіспейтін сан тапсырмасын жасау
+        function generateMissingNumberExercise() {
+            currentExercise = 3;
+            const limits = getRangeLimits();
+            
+            // Ортаңғы санды анықтау
+            let middleNumber = Math.floor(Math.random() * (limits.max - 2)) + limits.min + 1;
+            
+            document.getElementById('numberBeforeMissing').textContent = middleNumber - 1;
+            document.getElementById('numberAfterMissing').textContent = middleNumber + 1;
+            document.getElementById('missingNumberAnswer').value = '';
+            document.getElementById('missingNumberFeedback').textContent = '';
+            
+            // Барлық тапсырмаларды жасыру
+            document.querySelectorAll('.counting-exercise').forEach(ex => {
+                ex.style.display = 'none';
+            });
+            
+            // Ағымдағы тапсырманы көрсету
+            document.getElementById('missingNumberExercise').style.display = 'block';
+            
+            // Кіріс өрісіне фокус
+            document.getElementById('missingNumberAnswer').focus();
+        }
+        
+        // Жетіспейтін санды тексеру
+        function checkMissingNumber() {
+            const userAnswer = parseInt(document.getElementById('missingNumberAnswer').value);
+            const numberBefore = parseInt(document.getElementById('numberBeforeMissing').textContent);
+            const numberAfter = parseInt(document.getElementById('numberAfterMissing').textContent);
+            const correctAnswer = numberBefore + 1; // немесе numberAfter - 1
+            const feedback = document.getElementById('missingNumberFeedback');
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = 'Санды енгізіңіз!';
+                feedback.className = 'feedback wrong-feedback';
+                return;
+            }
+            
+            totalExercises++;
+            
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = 'Дұрыс! ' + numberBefore + ' пен ' + numberAfter + ' арасындағы сан: ' + correctAnswer + '! ✨';
+                feedback.className = 'feedback correct-feedback';
+                correctAnswers++;
+            } else {
+                feedback.textContent = 'Қате! Дұрыс жауап: ' + correctAnswer;
+                feedback.className = 'feedback wrong-feedback';
+            }
+        }
+        
+        // Сан қатары тапсырмасын жасау
+        function generateNumberSequenceExercise() {
+            currentExercise = 4;
+            const grid = document.getElementById('numberSequenceGrid');
+            grid.innerHTML = '';
+            
+            const limits = getRangeLimits();
+            const startNumber = Math.floor(Math.random() * (limits.max - 9)) + limits.min;
+            const missingIndex = Math.floor(Math.random() * 10);
+            let correctAnswer = 0;
+            
+            // 10 саннан тұратын тор жасау
+            for (let i = 0; i < 10; i++) {
+                const numberBox = document.createElement('div');
+                const currentNumber = startNumber + i;
+                
+                if (i === missingIndex) {
+                    numberBox.className = 'grid-number missing';
+                    numberBox.textContent = '?';
+                    numberBox.id = 'missingGridNumber';
+                    correctAnswer = currentNumber;
+                } else {
+                    numberBox.className = 'grid-number';
+                    numberBox.textContent = currentNumber;
+                }
+                
+                grid.appendChild(numberBox);
+            }
+            
+            document.getElementById('sequenceAnswer').value = '';
+            document.getElementById('sequenceFeedback').textContent = '';
+            
+            // Барлық тапсырмаларды жасыру
+            document.querySelectorAll('.counting-exercise').forEach(ex => {
+                ex.style.display = 'none';
+            });
+            
+            // Ағымдағы тапсырманы көрсету
+            document.getElementById('numberSequenceExercise').style.display = 'block';
+            
+            // Кіріс өрісіне фокус
+            document.getElementById('sequenceAnswer').focus();
+        }
+        
+        // Сан қатарын тексеру
+        function checkSequence() {
+            const userAnswer = parseInt(document.getElementById('sequenceAnswer').value);
+            const feedback = document.getElementById('sequenceFeedback');
+            
+            // Жетіспейтін санды есептеу
+            const numbers = Array.from(document.querySelectorAll('.grid-number:not(.missing)'))
+                .map(el => parseInt(el.textContent));
+            numbers.sort((a, b) => a - b);
+            
+            let correctAnswer = 0;
+            for (let i = 1; i < numbers.length; i++) {
+                if (numbers[i] - numbers[i-1] > 1) {
+                    correctAnswer = numbers[i-1] + 1;
+                    break;
+                }
+            }
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = 'Санды енгізіңіз!';
+                feedback.className = 'feedback wrong-feedback';
+                return;
+            }
+            
+            totalExercises++;
+            
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = 'Дұрыс! Жетіспейтін сан: ' + correctAnswer + '! ✨';
+                feedback.className = 'feedback correct-feedback';
+                correctAnswers++;
+                
+                // Толтырылған санды көрсету
+                document.getElementById('missingGridNumber').textContent = correctAnswer;
+                document.getElementById('missingGridNumber').classList.remove('missing');
+                document.getElementById('missingGridNumber').style.background = '#d4ffd4';
+                document.getElementById('missingGridNumber').style.color = '#2ecc71';
+            } else {
+                feedback.textContent = 'Қате! Дұрыс жауап: ' + correctAnswer;
+                feedback.className = 'feedback wrong-feedback';
+            }
+        }
+    </script>
+</body>
+</html>

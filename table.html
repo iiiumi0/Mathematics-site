@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Көңілді математика - Көбейту кестесі</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f9ff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 150, 0.1);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px dashed #ff7b9c;
+        }
+        
+        .lesson-info {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .lesson-title {
+            color: #ff7b5c;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(106, 177, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .user-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(106, 177, 255, 0.4);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        .back-btn {
+            background-color: #ff7b9c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(255, 123, 156, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .table-section {
+            background-color: #f9fdff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 3px solid #e6f2ff;
+            text-align: center;
+        }
+        
+        .section-title {
+            color: #ff7b5c;
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+        
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            gap: 6px;
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #ff7b5c, #ff9a8b);
+            color: white;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .table-cell {
+            background: white;
+            border: 2px solid #ffcc00;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 55px;
+            cursor: default;
+        }
+        
+        .table-cell.empty {
+            background: linear-gradient(135deg, #ff7b5c, #ff9a8b);
+            color: white;
+            font-weight: bold;
+            border-color: #ff7b5c;
+        }
+        
+        .table-cell.highlighted {
+            background: linear-gradient(135deg, #fff0e6, #fff9e6);
+            border-color: #ff7b5c;
+            color: #ff7b5c;
+        }
+        
+        .table-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .table-btn {
+            background: #ffcc00;
+            color: #333;
+            border: none;
+            padding: 10px 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 45px;
+        }
+        
+        .table-btn:hover {
+            background: #ffb300;
+            transform: translateY(-3px);
+        }
+        
+        .table-btn.selected {
+            background: #ff7b5c;
+            color: white;
+        }
+        
+        .info-section {
+            background: linear-gradient(135deg, #e6f7ff, #f0f9ff);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 2px solid #6ab1ff;
+            text-align: left;
+        }
+        
+        .info-title {
+            color: #6ab1ff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .info-text {
+            color: #333;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .highlight {
+            color: #ff7b5c;
+            font-weight: bold;
+        }
+        
+        .memory-tips {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #ffcc00;
+        }
+        
+        .memory-tips h4 {
+            color: #ff7b5c;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .memory-tips ul {
+            padding-left: 20px;
+        }
+        
+        .memory-tips li {
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .table-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+            }
+            
+            .table-cell {
+                padding: 8px;
+                font-size: 1.1rem;
+                min-height: 45px;
+            }
+            
+            .table-header {
+                padding: 8px;
+                font-size: 1rem;
+            }
+            
+            .user-info {
+                top: 20px;
+                right: 20px;
+            }
+            
+            .table-btn {
+                padding: 8px 12px;
+                font-size: 1.1rem;
+                min-width: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .table-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .table-cell {
+                padding: 6px;
+                font-size: 1rem;
+                min-height: 40px;
+            }
+            
+            .table-header {
+                padding: 6px;
+                font-size: 0.9rem;
+            }
+            
+            .table-btn {
+                padding: 6px 10px;
+                font-size: 1rem;
+                min-width: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="user-info" id="userInfo">
+        <img id="userAvatar" class="user-avatar" src="" alt="Аватар">
+        <span id="usernameDisplay">Бала</span>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" id="backButton">
+                ← Сабақтарға
+            </button>
+            
+            <div class="lesson-info">
+                <h1 class="lesson-title" id="lessonTitle">Көбейту кестесі</h1>
+                <p style="color: #666; font-size: 1.2rem;">Кестені жаттауға көмекші құрал</p>
+            </div>
+            
+            <div style="width: 100px;"></div>
+        </div>
+        
+        <div class="table-section">
+            <h2 class="section-title">Көбейту кестесін таңдаңыз</h2>
+            
+            <div class="table-selector" id="tableSelector">
+                <!-- Кестелерді таңдау түймелері -->
+            </div>
+            
+            <div class="table-grid" id="tableGrid">
+                <!-- Кесте осында пайда болады -->
+            </div>
+            
+            <div class="info-section">
+                <h3 class="info-title">Көбейту кестесін жаттау үшін кеңестер</h3>
+                <div class="info-text">
+                    <p><span class="highlight">Қадамдық оқу:</span> Бір күнде барлық кестені жаттамаңыз. Күніне бір кестеден бастаңыз.</p>
+                    <p><span class="highlight">Қайталау:</span> Ертеңгі күні кеше жаттаған кестені қайталаңыз.</p>
+                    <p><span class="highlight">Көру:</span> Кестені қараңыз, оқыңыз және көзіңізді жұмып қайта айтыңыз.</p>
+                </div>
+                
+                <div class="memory-tips">
+                    <h4>Жаттау әдістері:</h4>
+                    <ul>
+                        <li>Әр кестені жоғарыдан төменге қарай оқыңыз</li>
+                        <li>Кестені жазғанда дауыстап оқыңыз</li>
+                        <li>Әр кестені 3 рет қайталаңыз</li>
+                        <li>Кешке жаттығып, таңертең қайталаңыз</li>
+                        <li>Кестені қабырғаға іліп қойыңыз</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL параметрлері
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'Бала';
+        const age = parseInt(urlParams.get('age')) || 7;
+        
+        // Ойын айнымалылары
+        let currentTable = 2;
+        
+        // Бетті инициализациялау
+        document.addEventListener('DOMContentLoaded', function() {
+            // Панельдерді толтыру
+            document.getElementById('lessonTitle').textContent = 'Көбейту кестесі';
+            document.getElementById('usernameDisplay').textContent = username;
+            
+            // Аватарды жүктеу
+            loadUserAvatar();
+            
+            // Кесте таңдау түймелерін жасау (1-ден 10-ға дейін)
+            createTableButtons();
+            
+            // Бастапқы кестені көрсету
+            generateMultiplicationTable(currentTable);
+        });
+        
+        // Аватарды жүктеу
+        function loadUserAvatar() {
+            const savedAvatar = localStorage.getItem('userAvatar');
+            const avatarImg = document.getElementById('userAvatar');
+            
+            if (savedAvatar) {
+                avatarImg.src = savedAvatar;
+            } else {
+                // Әдепкі аватар (тексттік версия)
+                avatarImg.alt = username;
+                avatarImg.style.backgroundColor = '#6ab1ff';
+                avatarImg.style.display = 'flex';
+                avatarImg.style.alignItems = 'center';
+                avatarImg.style.justifyContent = 'center';
+                avatarImg.style.color = 'white';
+                avatarImg.style.fontWeight = 'bold';
+                avatarImg.style.fontSize = '18px';
+                avatarImg.textContent = username.charAt(0).toUpperCase();
+                avatarImg.src = '';
+            }
+            
+            // Профильге өту
+            document.getElementById('userInfo').addEventListener('click', function() {
+                window.location.href = 'profile.html?username=' + encodeURIComponent(username) + '&age=' + age;
+            });
+        }
+        
+        // Артқа түймесі - сабақтар бетіне
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'lessons.html?username=' + encodeURIComponent(username) + '&age=' + age;
+        });
+        
+        // Кесте таңдау түймелерін жасау
+        function createTableButtons() {
+            const tableSelector = document.getElementById('tableSelector');
+            tableSelector.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const button = document.createElement('button');
+                button.className = 'table-btn';
+                if (i === currentTable) button.classList.add('selected');
+                button.textContent = i;
+                button.dataset.table = i;
+                button.addEventListener('click', function() {
+                    currentTable = parseInt(this.dataset.table);
+                    
+                    // Барлық түймелерден таңдалған класты алып тастау
+                    document.querySelectorAll('.table-btn').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    
+                    // Ағымдағы түймеге таңдалған класты қосу
+                    this.classList.add('selected');
+                    
+                    // Жаңа кестені көрсету
+                    generateMultiplicationTable(currentTable);
+                    
+                    // Тақырыпты жаңарту
+                    document.getElementById('lessonTitle').textContent = `${currentTable} көбейту кестесі`;
+                });
+                tableSelector.appendChild(button);
+            }
+        }
+        
+        // Көбейту кестесін жасау
+        function generateMultiplicationTable(tableNumber) {
+            const tableGrid = document.getElementById('tableGrid');
+            tableGrid.innerHTML = '';
+            
+            // Бос сол жақ бұрыш
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'table-cell empty';
+            emptyCell.textContent = '×';
+            tableGrid.appendChild(emptyCell);
+            
+            // Баған тақырыптары (1-10)
+            for (let col = 1; col <= 10; col++) {
+                const headerCell = document.createElement('div');
+                headerCell.className = 'table-header';
+                headerCell.textContent = col;
+                tableGrid.appendChild(headerCell);
+            }
+            
+            // Кесте жолдары
+            for (let row = 1; row <= 10; row++) {
+                // Жол тақырыбы
+                const rowHeader = document.createElement('div');
+                rowHeader.className = 'table-header';
+                rowHeader.textContent = row;
+                tableGrid.appendChild(rowHeader);
+                
+                // Жол элементтері
+                for (let col = 1; col <= 10; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'table-cell';
+                    
+                    // Таңдалған кестені ерекшелеу
+                    if (row === tableNumber || col === tableNumber) {
+                        cell.classList.add('highlighted');
+                    }
+                    
+                    cell.textContent = row * col;
+                    
+                    tableGrid.appendChild(cell);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
