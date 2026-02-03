@@ -81,6 +81,13 @@
             margin-bottom: 40px;
         }
         
+        .additional-lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
         .lesson-card {
             background: white;
             border-radius: 20px;
@@ -111,6 +118,10 @@
         .subtraction { color: #6ab1ff; }
         .multiplication { color: #ffcc00; }
         .division { color: #7bff7b; }
+        .table { color: #ff7b5c; }
+        .brackets { color: #a855f7; }
+        .mixed { color: #00b894; }
+        .count { color: #00cec9; }
         
         .lesson-card h3 {
             font-size: 1.8rem;
@@ -243,6 +254,7 @@
             }
             
             .lessons-grid,
+            .additional-lessons-grid,
             .difficulty-grid {
                 grid-template-columns: 1fr;
             }
@@ -270,7 +282,7 @@
             <div class="welcome" id="welcomeMessage">Қош келдіңіз, балалар!</div>
         </div>
         
-        <h2 class="section-title">Сабақты таңдаңыз:</h2>
+        <h2 class="section-title">Негізгі амалдар:</h2>
         
         <div class="lessons-grid" id="lessonsGrid">
             <div class="lesson-card" data-lesson="addition">
@@ -278,7 +290,7 @@
                     +
                 </div>
                 <h3>Қосу</h3>
-                <p>Сандарды қосу үйренеміз. Бірінші қадам!</p>
+                <p>Сандарды қосу үйренеміз. Мысалы: 5 + 3 = ?</p>
             </div>
             
             <div class="lesson-card" data-lesson="subtraction">
@@ -286,7 +298,7 @@
                     −
                 </div>
                 <h3>Алу</h3>
-                <p>Сандарды азайтуды үйренеміз. Қызықты!</p>
+                <p>Сандарды азайтуды үйренеміз. Мысалы: 8 - 3 = ?</p>
             </div>
             
             <div class="lesson-card" data-lesson="multiplication">
@@ -294,7 +306,7 @@
                     ×
                 </div>
                 <h3>Көбейту</h3>
-                <p>Көбейту кестесін үйренеміз. Маңызды!</p>
+                <p>Көбейтуді үйренеміз. Мысалы: 4 × 3 = ?</p>
             </div>
             
             <div class="lesson-card" data-lesson="division">
@@ -302,7 +314,43 @@
                     ÷
                 </div>
                 <h3>Бөлу</h3>
-                <p>Бөлуді үйренеміз. Есептеулерді жеңілдетелік!</p>
+                <p>Бөлуді үйренеміз. Мысалы: 12 ÷ 3 = ?</p>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Қосымша тапсырмалар:</h2>
+        
+        <div class="additional-lessons-grid" id="additionalLessonsGrid">
+            <div class="lesson-card" data-lesson="table">
+                <div class="lesson-icon table">
+                    📊
+                </div>
+                <h3>Көбейту кестесі</h3>
+                <p>Көбейту кестесін жаттап, есептеу жылдамдығын арттырамыз</p>
+            </div>
+            
+            <div class="lesson-card" data-lesson="brackets">
+                <div class="lesson-icon brackets">
+                    ( )
+                </div>
+                <h3>Жақшамен жұмыс</h3>
+                <p>Жақшадағы амалдарды дұрыс орындауды үйренеміз</p>
+            </div>
+            
+            <div class="lesson-card" data-lesson="mixed">
+                <div class="lesson-icon mixed">
+                    ±×÷
+                </div>
+                <h3>Аралас есептер</h3>
+                <p>Әртүрлі амалдарды қолдана отырып күрделі есептер шығарамыз</p>
+            </div>
+            
+            <div class="lesson-card" data-lesson="count">
+                <div class="lesson-icon count">
+                    🔢
+                </div>
+                <h3>Жалпы санау</h3>
+                <p>Сандармен жылдам жұмыс істеу дағдысын дамытамыз</p>
             </div>
         </div>
         
@@ -335,7 +383,7 @@
                         ★★★
                     </div>
                     <h3>Қиын</h3>
-                    <p>1-ден 100-ге дейінгі сандармен жұмыс істейміз</p>
+                    <p>1-ден 50-ге дейінгі сандармен жұмыс істейміз</p>
                     <div class="task-count">10 тапсырма</div>
                     <button class="start-btn" data-difficulty="hard">Бастау</button>
                 </div>
@@ -348,6 +396,21 @@
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username') || 'Бала';
         const age = parseInt(urlParams.get('age')) || 7;
+        
+        // Жаңа сабақтардың атын анықтау
+        const lessonTitles = {
+            'addition': 'Қосу',
+            'subtraction': 'Алу',
+            'multiplication': 'Көбейту',
+            'division': 'Бөлу',
+            'table': 'Көбейту кестесі',
+            'brackets': 'Жақшамен жұмыс',
+            'mixed': 'Аралас есептер',
+            'count': 'Жалпы санау'
+        };
+        
+        // Арнайы беттер (қиындық қажет емес)
+        const specialLessons = ['table', 'count'];
         
         // Аватарды жүктеу
         function loadUserAvatar() {
@@ -390,33 +453,161 @@
         const difficultyTitle = document.getElementById('difficultyTitle');
         
         let selectedLesson = 'addition';
-        const lessonTitles = {
-            'addition': 'Қосу',
-            'subtraction': 'Алу',
-            'multiplication': 'Көбейту',
-            'division': 'Бөлу'
-        };
         
         // Әр сабақ картасына тыққанда
         lessonCards.forEach(card => {
             card.addEventListener('click', function() {
+                // Таңдалған сабақты сақтау
+                selectedLesson = this.dataset.lesson;
+                
+                // Арнайы сабақтарды тексеру (кесте, санау)
+                if (specialLessons.includes(selectedLesson)) {
+                    // Тікелей арнайы бетке өту
+                    if (selectedLesson === 'table') {
+                        window.location.href = `table.html?username=${encodeURIComponent(username)}&age=${age}`;
+                    } else if (selectedLesson === 'count') {
+                        window.location.href = `count.html?username=${encodeURIComponent(username)}&age=${age}`;
+                    }
+                    return;
+                }
+                
+                // Қалған сабақтар үшін әдетті әрекет
                 // Барлық карталардан таңдалған класты алып тастау
                 lessonCards.forEach(c => c.classList.remove('selected-lesson'));
                 
                 // Ағымдағы картаға таңдалған класты қосу
                 this.classList.add('selected-lesson');
                 
-                // Таңдалған сабақты сақтау
-                selectedLesson = this.dataset.lesson;
-                
                 // Қиындық бөлімін көрсету
                 difficultySection.style.display = 'block';
                 difficultyTitle.textContent = `${lessonTitles[selectedLesson]} сабағы`;
+                
+                // Қиындықтар сипаттамасын жаңарту
+                updateDifficultyDescriptions(selectedLesson);
                 
                 // Қиындық бөліміне тежеу
                 difficultySection.scrollIntoView({ behavior: 'smooth' });
             });
         });
+        
+        // Қиындық сипаттамаларын жаңарту функциясы
+        function updateDifficultyDescriptions(lesson) {
+            const difficultyCards = document.querySelectorAll('.difficulty-card');
+            const taskCounts = document.querySelectorAll('.task-count');
+            
+            // Әр сабақ үшін қиындық сипаттамалары
+            const descriptions = {
+                'addition': {
+                    'easy': 'Мысалы: 5 + 3 = ?',
+                    'medium': 'Мысалы: 12 + 7 = ?',
+                    'hard': 'Мысалы: 34 + 18 = ?'
+                },
+                'subtraction': {
+                    'easy': 'Мысалы: 8 - 3 = ?',
+                    'medium': 'Мысалы: 17 - 9 = ?',
+                    'hard': 'Мысалы: 45 - 19 = ?'
+                },
+                'multiplication': {
+                    'easy': 'Мысалы: 4 × 3 = ?',
+                    'medium': 'Мысалы: 7 × 6 = ?',
+                    'hard': 'Мысалы: 9 × 8 = ?'
+                },
+                'division': {
+                    'easy': 'Мысалы: 12 ÷ 3 = ?',
+                    'medium': 'Мысалы: 36 ÷ 6 = ?',
+                    'hard': 'Мысалы: 72 ÷ 8 = ?'
+                },
+                'brackets': {
+                    'easy': 'Мысалы: (3 + 4) + 2 = ?',
+                    'medium': 'Мысалы: 5 + (7 - 2) = ?',
+                    'hard': 'Мысалы: (12 - 5) + (3 × 2) = ?'
+                },
+                'mixed': {
+                    'easy': 'Мысалы: 5 + 3 × 2 = ?',
+                    'medium': 'Мысалы: (8 - 3) × 2 = ?',
+                    'hard': 'Мысалы: 6 × 3 + 12 ÷ 4 = ?'
+                }
+            };
+            
+            // Әр сабақ үшін тапсырмалар саны
+            const taskNumbers = {
+                'addition': { 'easy': 5, 'medium': 8, 'hard': 10 },
+                'subtraction': { 'easy': 5, 'medium': 8, 'hard': 10 },
+                'multiplication': { 'easy': 5, 'medium': 8, 'hard': 10 },
+                'division': { 'easy': 5, 'medium': 8, 'hard': 10 },
+                'brackets': { 'easy': 5, 'medium': 8, 'hard': 12 },
+                'mixed': { 'easy': 5, 'medium': 8, 'hard': 12 }
+            };
+            
+            // Әр сабақ үшін сан диапазондары
+            const ranges = {
+                'addition': {
+                    'easy': '1-ден 10-ға дейін',
+                    'medium': '1-ден 20-ға дейін',
+                    'hard': '1-ден 50-ға дейін'
+                },
+                'subtraction': {
+                    'easy': '1-ден 10-ға дейін',
+                    'medium': '1-ден 20-ға дейін',
+                    'hard': '1-ден 50-ға дейін'
+                },
+                'multiplication': {
+                    'easy': '2-ден 5-ке дейін',
+                    'medium': '2-ден 10-ға дейін',
+                    'hard': '2-ден 12-ге дейін'
+                },
+                'division': {
+                    'easy': '2-ден 5-ке дейін',
+                    'medium': '2-ден 10-ға дейін',
+                    'hard': '2-ден 12-ге дейін'
+                },
+                'brackets': {
+                    'easy': 'Қарапайым жақшамен есептер',
+                    'medium': 'Көп амалды жақшамен есептер',
+                    'hard': 'Күрделі жақшамен есептер'
+                },
+                'mixed': {
+                    'easy': 'Екі амалды аралас есептер',
+                    'medium': 'Үш амалды аралас есептер',
+                    'hard': 'Төрт амалды аралас есептер'
+                }
+            };
+            
+            // Қиындық карталарын жаңарту
+            difficultyCards.forEach(card => {
+                const difficulty = card.dataset.difficulty;
+                const descriptionElement = card.querySelector('p');
+                
+                // Түсініктемелерді жаңарту
+                if (descriptions[lesson] && descriptions[lesson][difficulty]) {
+                    descriptionElement.textContent = descriptions[lesson][difficulty];
+                    
+                    // Қосымша ақпарат
+                    if (lesson === 'brackets' || lesson === 'mixed') {
+                        const extraInfo = document.createElement('div');
+                        extraInfo.style.color = '#888';
+                        extraInfo.style.fontSize = '0.9rem';
+                        extraInfo.style.marginTop = '5px';
+                        extraInfo.textContent = ranges[lesson][difficulty];
+                        descriptionElement.parentNode.insertBefore(extraInfo, descriptionElement.nextSibling);
+                        
+                        // Ескі қосымша ақпаратты жою
+                        const oldExtra = card.querySelector('.extra-info');
+                        if (oldExtra) oldExtra.remove();
+                        extraInfo.classList.add('extra-info');
+                    }
+                }
+            });
+            
+            // Тапсырмалар санын жаңарту
+            taskCounts.forEach((countElement, index) => {
+                const difficulty = ['easy', 'medium', 'hard'][index];
+                
+                if (taskNumbers[lesson] && taskNumbers[lesson][difficulty]) {
+                    countElement.textContent = `${taskNumbers[lesson][difficulty]} тапсырма`;
+                }
+            });
+        }
         
         // Қиындықты таңдау және ойын бетіне өту
         const startButtons = document.querySelectorAll('.start-btn');
@@ -453,6 +644,9 @@
             
             // Аватарды жүктеу
             loadUserAvatar();
+            
+            // Бастапқы қиындық сипаттамаларын орнату
+            updateDifficultyDescriptions('addition');
         });
     </script>
 </body>
