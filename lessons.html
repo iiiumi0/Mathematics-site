@@ -97,6 +97,7 @@
             transition: all 0.3s;
             cursor: pointer;
             border: 3px solid transparent;
+            position: relative;
         }
         
         .lesson-card:hover {
@@ -167,6 +168,7 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             transition: all 0.3s;
             cursor: pointer;
+            position: relative;
         }
         
         .difficulty-card:hover {
@@ -248,6 +250,56 @@
             box-shadow: 0 6px 15px rgba(255, 123, 156, 0.4);
         }
         
+        /* Бұғатталған деңгейлерге стильдер */
+        .locked {
+            opacity: 0.6;
+            position: relative;
+            cursor: not-allowed;
+        }
+        
+        .locked:hover {
+            transform: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .lock-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: #999;
+        }
+        
+        .requirements {
+            display: block;
+            margin-top: 10px;
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .level-progress {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #7bff7b;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2.2rem;
@@ -290,7 +342,7 @@
                     +
                 </div>
                 <h3>Қосу</h3>
-                <p>Сандарды қосу үйренеміз. Мысалы: 5 + 3 = ?</p>
+                <p>Сандарды қосу амалын үйреніңіз. Балаңыздың санау дағдысын дамытыңыз.</p>
             </div>
             
             <div class="lesson-card" data-lesson="subtraction">
@@ -298,7 +350,7 @@
                     −
                 </div>
                 <h3>Алу</h3>
-                <p>Сандарды азайтуды үйренеміз. Мысалы: 8 - 3 = ?</p>
+                <p>Сандарды азайту амалын меңгеріңіз. Логикалық ойлауды дамытуға көмектеседі.</p>
             </div>
             
             <div class="lesson-card" data-lesson="multiplication">
@@ -306,7 +358,7 @@
                     ×
                 </div>
                 <h3>Көбейту</h3>
-                <p>Көбейтуді үйренеміз. Мысалы: 4 × 3 = ?</p>
+                <p>Көбейту амалының негіздерін үйреніңіз. Есептеу жылдамдығын арттырыңыз.</p>
             </div>
             
             <div class="lesson-card" data-lesson="division">
@@ -314,7 +366,7 @@
                     ÷
                 </div>
                 <h3>Бөлу</h3>
-                <p>Бөлуді үйренеміз. Мысалы: 12 ÷ 3 = ?</p>
+                <p>Бөлу амалын түсініңіз. Сандарды тең бөлу дағдысын қалыптастырыңыз.</p>
             </div>
         </div>
         
@@ -326,7 +378,7 @@
                     📊
                 </div>
                 <h3>Көбейту кестесі</h3>
-                <p>Көбейту кестесін жаттап, есептеу жылдамдығын арттырамыз</p>
+                <p>Көбейту кестесін жаттап, есептеу жылдамдығын арттырыңыз.</p>
             </div>
             
             <div class="lesson-card" data-lesson="brackets">
@@ -334,7 +386,7 @@
                     ( )
                 </div>
                 <h3>Жақшамен жұмыс</h3>
-                <p>Жақшадағы амалдарды дұрыс орындауды үйренеміз</p>
+                <p>Жақшадағы амалдарды дұрыс орындауды үйреніңіз.</p>
             </div>
             
             <div class="lesson-card" data-lesson="mixed">
@@ -342,7 +394,7 @@
                     ±×÷
                 </div>
                 <h3>Аралас есептер</h3>
-                <p>Әртүрлі амалдарды қолдана отырып күрделі есептер шығарамыз</p>
+                <p>Әртүрлі амалдарды қолдана отырып күрделі есептер шығарыңыз.</p>
             </div>
             
             <div class="lesson-card" data-lesson="count">
@@ -350,7 +402,7 @@
                     🔢
                 </div>
                 <h3>Жалпы санау</h3>
-                <p>Сандармен жылдам жұмыс істеу дағдысын дамытамыз</p>
+                <p>Сандармен жылдам жұмыс істеу дағдысын дамытыңыз.</p>
             </div>
         </div>
         
@@ -358,34 +410,50 @@
             <h2 class="difficulty-title" id="difficultyTitle">Қосу сабағы</h2>
             
             <div class="difficulty-grid">
-                <div class="difficulty-card easy" data-difficulty="easy">
+                <div class="difficulty-card easy" data-difficulty="easy" id="easyLevel">
                     <div class="difficulty-icon">
                         ★
                     </div>
-                    <h3>Жеңіл</h3>
-                    <p>1-ден 10-ға дейінгі сандармен жұмыс істейміз</p>
+                    <h3>Жеңіл деңгей</h3>
+                    <p>Негізгі қосу амалдарымен танысыңыз. Балаңызға қарапайым мысалдар арқылы түсіндіріңіз.</p>
                     <div class="task-count">5 тапсырма</div>
                     <button class="start-btn" data-difficulty="easy">Бастау</button>
                 </div>
                 
-                <div class="difficulty-card medium" data-difficulty="medium">
+                <div class="difficulty-card medium locked" data-difficulty="medium" id="mediumLevel">
+                    <div class="lock-icon">🔒</div>
                     <div class="difficulty-icon">
                         ★★
                     </div>
-                    <h3>Орташа</h3>
-                    <p>1-ден 20-ға дейінгі сандармен жұмыс істейміз</p>
+                    <h3>Орташа деңгей</h3>
+                    <p>Қосу дағдыларын нығайтыңыз. Көбірек сандармен жұмыс істеуді үйреніңіз.</p>
                     <div class="task-count">8 тапсырма</div>
-                    <button class="start-btn" data-difficulty="medium">Бастау</button>
+                    <span class="requirements">Ашылу үшін жеңіл деңгейді 5 рет ойнау керек</span>
+                    <div class="level-progress">
+                        <div>Прогресс: <span id="mediumProgress">0</span>/5</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="mediumProgressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <button class="start-btn" data-difficulty="medium" disabled>Бұғатталған</button>
                 </div>
                 
-                <div class="difficulty-card hard" data-difficulty="hard">
+                <div class="difficulty-card hard locked" data-difficulty="hard" id="hardLevel">
+                    <div class="lock-icon">🔒</div>
                     <div class="difficulty-icon">
                         ★★★
                     </div>
-                    <h3>Қиын</h3>
-                    <p>1-ден 50-ге дейінгі сандармен жұмыс істейміз</p>
+                    <h3>Қиын деңгей</h3>
+                    <p>Қосу амалын дерлік меңгеріңіз. Күрделі мысалдарды шешу дағдысын қалыптастырыңыз.</p>
                     <div class="task-count">10 тапсырма</div>
-                    <button class="start-btn" data-difficulty="hard">Бастау</button>
+                    <span class="requirements">Ашылу үшін орташа деңгейді 10 рет ойнау керек</span>
+                    <div class="level-progress">
+                        <div>Прогресс: <span id="hardProgress">0</span>/10</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="hardProgressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <button class="start-btn" data-difficulty="hard" disabled>Бұғатталған</button>
                 </div>
             </div>
         </div>
@@ -411,6 +479,78 @@
         
         // Арнайы беттер (қиындық қажет емес)
         const specialLessons = ['table', 'count'];
+        
+        // Прогресті сақтау функциясы
+        function getLevelProgress(lesson) {
+            const savedProgress = localStorage.getItem(`math_progress_${lesson}`);
+            return savedProgress ? JSON.parse(savedProgress) : {
+                easyCompleted: 0,
+                easyTotal: 5,
+                mediumCompleted: 0,
+                mediumTotal: 10,
+                hardCompleted: 0,
+                hardTotal: 0
+            };
+        }
+        
+        function saveLevelProgress(lesson, progress) {
+            localStorage.setItem(`math_progress_${lesson}`, JSON.stringify(progress));
+        }
+        
+        // Деңгейдің ашық/бұғатталған жағдайын тексеру
+        function checkLevelAvailability(lesson) {
+            const progress = getLevelProgress(lesson);
+            const mediumLevel = document.getElementById('mediumLevel');
+            const hardLevel = document.getElementById('hardLevel');
+            const mediumProgress = document.getElementById('mediumProgress');
+            const mediumProgressFill = document.getElementById('mediumProgressFill');
+            const hardProgress = document.getElementById('hardProgress');
+            const hardProgressFill = document.getElementById('hardProgressFill');
+            
+            // Орташа деңгейдің прогрессін көрсету
+            mediumProgress.textContent = progress.easyCompleted;
+            const mediumPercent = Math.min((progress.easyCompleted / 5) * 100, 100);
+            mediumProgressFill.style.width = `${mediumPercent}%`;
+            
+            // Қиын деңгейдің прогрессін көрсету
+            hardProgress.textContent = progress.mediumCompleted;
+            const hardPercent = Math.min((progress.mediumCompleted / 10) * 100, 100);
+            hardProgressFill.style.width = `${hardPercent}%`;
+            
+            // Орташа деңгейді тексеру
+            if (progress.easyCompleted >= 5) {
+                mediumLevel.classList.remove('locked');
+                mediumLevel.querySelector('.lock-icon').style.display = 'none';
+                mediumLevel.querySelector('.requirements').style.display = 'none';
+                mediumLevel.querySelector('.start-btn').disabled = false;
+                mediumLevel.querySelector('.start-btn').textContent = 'Бастау';
+                mediumLevel.style.cursor = 'pointer';
+            } else {
+                mediumLevel.classList.add('locked');
+                mediumLevel.querySelector('.lock-icon').style.display = 'block';
+                mediumLevel.querySelector('.requirements').style.display = 'block';
+                mediumLevel.querySelector('.start-btn').disabled = true;
+                mediumLevel.querySelector('.start-btn').textContent = 'Бұғатталған';
+                mediumLevel.style.cursor = 'not-allowed';
+            }
+            
+            // Қиын деңгейді тексеру
+            if (progress.mediumCompleted >= 10) {
+                hardLevel.classList.remove('locked');
+                hardLevel.querySelector('.lock-icon').style.display = 'none';
+                hardLevel.querySelector('.requirements').style.display = 'none';
+                hardLevel.querySelector('.start-btn').disabled = false;
+                hardLevel.querySelector('.start-btn').textContent = 'Бастау';
+                hardLevel.style.cursor = 'pointer';
+            } else {
+                hardLevel.classList.add('locked');
+                hardLevel.querySelector('.lock-icon').style.display = 'block';
+                hardLevel.querySelector('.requirements').style.display = 'block';
+                hardLevel.querySelector('.start-btn').disabled = true;
+                hardLevel.querySelector('.start-btn').textContent = 'Бұғатталған';
+                hardLevel.style.cursor = 'not-allowed';
+            }
+        }
         
         // Аватарды жүктеу
         function loadUserAvatar() {
@@ -482,7 +622,10 @@
                 difficultySection.style.display = 'block';
                 difficultyTitle.textContent = `${lessonTitles[selectedLesson]} сабағы`;
                 
-                // Қиындықтар сипаттамасын жаңарту
+                // Деңгейлердің жағдайын тексеру
+                checkLevelAvailability(selectedLesson);
+                
+                // Қиындық сипаттамасын жаңарту
                 updateDifficultyDescriptions(selectedLesson);
                 
                 // Қиындық бөліміне тежеу
@@ -498,34 +641,34 @@
             // Әр сабақ үшін қиындық сипаттамалары
             const descriptions = {
                 'addition': {
-                    'easy': 'Мысалы: 5 + 3 = ?',
-                    'medium': 'Мысалы: 12 + 7 = ?',
-                    'hard': 'Мысалы: 34 + 18 = ?'
+                    'easy': 'Қарапайым қосу амалдары. Балаңыздың негізгі дағдыларын қалыптастырады.',
+                    'medium': 'Күрделірек қосу есептері. Сан аралығы кеңейтілген.',
+                    'hard': 'Көп таңбалы сандарды қосу. Жылдам есептеу дағдыларын дамытады.'
                 },
                 'subtraction': {
-                    'easy': 'Мысалы: 8 - 3 = ?',
-                    'medium': 'Мысалы: 17 - 9 = ?',
-                    'hard': 'Мысалы: 45 - 19 = ?'
+                    'easy': 'Негізгі азайту амалдары. Математикалық түсінікті дамытады.',
+                    'medium': 'Ондыққа көшу арқылы азайту. Логикалық ойлауды нығайтады.',
+                    'hard': 'Күрделі азайту есептері. Есептеу дәлдігін арттырады.'
                 },
                 'multiplication': {
-                    'easy': 'Мысалы: 4 × 3 = ?',
-                    'medium': 'Мысалы: 7 × 6 = ?',
-                    'hard': 'Мысалы: 9 × 8 = ?'
+                    'easy': 'Қарапайым көбейту амалдары. Көбейтудің негіздерін үйретеді.',
+                    'medium': 'Көбейту кестесін қолдану. Жаттау дағдыларын дамытады.',
+                    'hard': 'Көп таңбалы сандарды көбейту. Күрделі есептеулерді орындау.'
                 },
                 'division': {
-                    'easy': 'Мысалы: 12 ÷ 3 = ?',
-                    'medium': 'Мысалы: 36 ÷ 6 = ?',
-                    'hard': 'Мысалы: 72 ÷ 8 = ?'
+                    'easy': 'Негізгі бөлу амалдары. Сандарды тең бөлу түсінігін қалыптастырады.',
+                    'medium': 'Қалдықпен бөлу есептері. Математикалық ойлауды дамытады.',
+                    'hard': 'Күрделі бөлу есептері. Есептерді тереңірек талдау.'
                 },
                 'brackets': {
-                    'easy': 'Мысалы: (3 + 4) + 2 = ?',
-                    'medium': 'Мысалы: 5 + (7 - 2) = ?',
-                    'hard': 'Мысалы: (12 - 5) + (3 × 2) = ?'
+                    'easy': 'Жақшаның маңызын түсіну. Амалдардың ретін үйрену.',
+                    'medium': 'Бірнеше жақшамен жұмыс істеу. Күрделірек математикалық өрнектер.',
+                    'hard': 'Көп деңгейлі жақшалармен есептер. Жоғары деңгейдегі талдау.'
                 },
                 'mixed': {
-                    'easy': 'Мысалы: 5 + 3 × 2 = ?',
-                    'medium': 'Мысалы: (8 - 3) × 2 = ?',
-                    'hard': 'Мысалы: 6 × 3 + 12 ÷ 4 = ?'
+                    'easy': 'Екі түрлі амалды қолдану. Негізгі амалдарды біріктіру.',
+                    'medium': 'Үш түрлі амалды қолдану. Күрделірек математикалық өрнектер.',
+                    'hard': 'Төрт амалды біріктіру. Толық математикалық ойлауды қажет етеді.'
                 }
             };
             
@@ -539,40 +682,6 @@
                 'mixed': { 'easy': 5, 'medium': 8, 'hard': 12 }
             };
             
-            // Әр сабақ үшін сан диапазондары
-            const ranges = {
-                'addition': {
-                    'easy': '1-ден 10-ға дейін',
-                    'medium': '1-ден 20-ға дейін',
-                    'hard': '1-ден 50-ға дейін'
-                },
-                'subtraction': {
-                    'easy': '1-ден 10-ға дейін',
-                    'medium': '1-ден 20-ға дейін',
-                    'hard': '1-ден 50-ға дейін'
-                },
-                'multiplication': {
-                    'easy': '2-ден 5-ке дейін',
-                    'medium': '2-ден 10-ға дейін',
-                    'hard': '2-ден 12-ге дейін'
-                },
-                'division': {
-                    'easy': '2-ден 5-ке дейін',
-                    'medium': '2-ден 10-ға дейін',
-                    'hard': '2-ден 12-ге дейін'
-                },
-                'brackets': {
-                    'easy': 'Қарапайым жақшамен есептер',
-                    'medium': 'Көп амалды жақшамен есептер',
-                    'hard': 'Күрделі жақшамен есептер'
-                },
-                'mixed': {
-                    'easy': 'Екі амалды аралас есептер',
-                    'medium': 'Үш амалды аралас есептер',
-                    'hard': 'Төрт амалды аралас есептер'
-                }
-            };
-            
             // Қиындық карталарын жаңарту
             difficultyCards.forEach(card => {
                 const difficulty = card.dataset.difficulty;
@@ -581,21 +690,6 @@
                 // Түсініктемелерді жаңарту
                 if (descriptions[lesson] && descriptions[lesson][difficulty]) {
                     descriptionElement.textContent = descriptions[lesson][difficulty];
-                    
-                    // Қосымша ақпарат
-                    if (lesson === 'brackets' || lesson === 'mixed') {
-                        const extraInfo = document.createElement('div');
-                        extraInfo.style.color = '#888';
-                        extraInfo.style.fontSize = '0.9rem';
-                        extraInfo.style.marginTop = '5px';
-                        extraInfo.textContent = ranges[lesson][difficulty];
-                        descriptionElement.parentNode.insertBefore(extraInfo, descriptionElement.nextSibling);
-                        
-                        // Ескі қосымша ақпаратты жою
-                        const oldExtra = card.querySelector('.extra-info');
-                        if (oldExtra) oldExtra.remove();
-                        extraInfo.classList.add('extra-info');
-                    }
                 }
             });
             
@@ -615,6 +709,9 @@
         startButtons.forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation(); // Картаға да тиіспеу үшін
+                
+                if (this.disabled) return; // Бұғатталған түймеге басуға болмайды
+                
                 const difficulty = this.dataset.difficulty;
                 
                 // Ойын бетіне өту
@@ -622,11 +719,14 @@
             });
         });
         
-        // Қиындық карталарын басқанда да бастау түймесін басу
+        // Қиындық карталарын басқанда да бастау түймесін басу (тек ашық болса)
         const difficultyCards = document.querySelectorAll('.difficulty-card');
         
         difficultyCards.forEach(card => {
             card.addEventListener('click', function(e) {
+                // Егер карта бұғатталған болса, тоқтату
+                if (this.classList.contains('locked')) return;
+                
                 // Егер бастау түймесіне басқан болса, оны тоқтатпау керек
                 if (e.target.classList.contains('start-btn')) return;
                 
@@ -647,6 +747,9 @@
             
             // Бастапқы қиындық сипаттамаларын орнату
             updateDifficultyDescriptions('addition');
+            
+            // Бірінші сабақтың деңгейлерін тексеру
+            checkLevelAvailability('addition');
         });
     </script>
 </body>
