@@ -277,6 +277,15 @@
         .percentage-medium { color: #f39c12; font-weight: bold; }
         .percentage-low { color: #e74c3c; font-weight: bold; }
         
+        .activity-visit {
+            color: #6ab1ff;
+            font-weight: bold;
+            background-color: #f0f9ff;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+        }
+        
         .progress-chart {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -365,6 +374,10 @@
         
         .action-btn.reset {
             background: linear-gradient(135deg, #ffcc00, #ffdd44);
+        }
+        
+        .action-btn.about {
+            background: linear-gradient(135deg, #a855f7, #c084fc);
         }
         
         /* Модальные окна */
@@ -631,7 +644,7 @@
                         🏆
                     </div>
                     <div class="stat-value" id="totalGames">0</div>
-                    <div class="stat-label">Ойналған ойындар</div>
+                    <div class="stat-label">Барлық қатысулар</div>
                 </div>
                 
                 <div class="stat-card">
@@ -646,30 +659,30 @@
                     <div class="stat-icon clock">
                         ⏱️
                     </div>
-                    <div class="stat-value" id="avgTime">0:00</div>
-                    <div class="stat-label">Орташа уақыт</div>
+                    <div class="stat-value" id="tableVisits">0</div>
+                    <div class="stat-label">Кестеге бару</div>
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-icon target">
                         🎯
                     </div>
-                    <div class="stat-value" id="successRate">0%</div>
-                    <div class="stat-label">Сәттілік деңгейі</div>
+                    <div class="stat-value" id="countVisits">0</div>
+                    <div class="stat-label">Санауға бару</div>
                 </div>
             </div>
         </div>
         
-        <h3 class="section-title">Ойын тарихы</h3>
+        <h3 class="section-title">Барлық қызметтер тарихы</h3>
         <div class="game-history">
             <div id="historyTableContainer">
                 <!-- Таблица с историей появится здесь -->
             </div>
         </div>
         
-        <h3 class="section-title">Даму статистикасы</h3>
+        <h3 class="section-title">Белсенділік статистикасы</h3>
         <div class="progress-chart" id="progressChart">
-            <!-- Графики прогресса появятся здесь -->
+            <!-- Графики активности появятся здесь -->
         </div>
         
         <div class="action-buttons">
@@ -678,6 +691,9 @@
             </button>
             <button class="action-btn" id="homeButton">
                 🏠 Басты бетке
+            </button>
+            <button class="action-btn about" id="aboutButton">
+                ℹ️ Біз туралы
             </button>
             <button class="action-btn reset" id="resetButton">
                 🗑️ Статистиканы тазалау
@@ -714,9 +730,9 @@
         // Бетті инициализациялау
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
-            loadGameHistory();
+            loadAllActivityHistory();
             updateStatistics();
-            loadProgressCharts();
+            loadActivityCharts();
             
             // Кнопкаларға әсер ету
             initEventListeners();
@@ -724,9 +740,10 @@
         
         // Инициализация обработчиков событий
         function initEventListeners() {
-            // Кнопка "Артқа"
+            // Кнопка "Артқа" - ИСПРАВЛЕНО
             document.getElementById('backButton').addEventListener('click', function() {
-                window.history.back();
+                // Всегда возвращаемся на lessons.html
+                window.location.href = `lessons.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
             
             // Кнопка выхода
@@ -749,14 +766,20 @@
                 window.location.href = `index.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
             
+            // Кнопка "Біз туралы" - переходит на страницу onas.html
+            document.getElementById('aboutButton').addEventListener('click', function() {
+                window.location.href = `onas.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
+            });
+            
             document.getElementById('resetButton').addEventListener('click', function() {
                 if (confirm('Статистиканы тазалағыңыз келе ме? Бұл әрекетті болдырмау мүмкін емес.')) {
                     localStorage.removeItem('gameHistory');
                     localStorage.removeItem('bestScores');
+                    localStorage.removeItem('visitHistory');
                     alert('Статистика тазаланды!');
-                    loadGameHistory();
+                    loadAllActivityHistory();
                     updateStatistics();
-                    loadProgressCharts();
+                    loadActivityCharts();
                 }
             });
             
@@ -933,49 +956,101 @@
             }
         }
         
-        // Ойын тарихын жүктеу (ИСПРАВЛЕНО - все на казахском)
-        function loadGameHistory() {
+        // Загрузить всю историю активности
+        function loadAllActivityHistory() {
             const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const visitHistory = JSON.parse(localStorage.getItem('visitHistory') || '[]');
             const container = document.getElementById('historyTableContainer');
             
-            if (gameHistory.length === 0) {
-                container.innerHTML = '<div class="no-data">Әлі ойын тарихы жоқ. Бірінші ойынды ойнап көріңіз!</div>';
+            if (gameHistory.length === 0 && visitHistory.length === 0) {
+                container.innerHTML = '<div class="no-data">Әлі белсенділік тарихы жоқ. Ойын ойнаңыз немесе сабақтарды қараңыз!</div>';
                 return;
             }
+            
+            // Объединяем историю игр и посещений
+            let allActivities = [];
+            
+            // Добавляем игры
+            gameHistory.forEach(game => {
+                allActivities.push({
+                    type: 'game',
+                    date: game.date,
+                    lesson: game.lesson,
+                    difficulty: game.difficulty,
+                    score: game.score,
+                    totalTasks: game.totalTasks,
+                    percentage: game.percentage,
+                    time: game.time
+                });
+            });
+            
+            // Добавляем посещения
+            visitHistory.forEach(visit => {
+                allActivities.push({
+                    type: 'visit',
+                    date: visit.date,
+                    lesson: visit.lesson,
+                    duration: visit.duration || 0
+                });
+            });
+            
+            // Сортируем по дате (новые сначала)
+            allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // Показываем только последние 15 активностей
+            const recentActivities = allActivities.slice(0, 15);
             
             let html = `
                 <table class="history-table">
                     <thead>
                         <tr>
                             <th>Күні</th>
-                            <th>Сабақ</th>
-                            <th>Қиындық</th>
-                            <th>Нәтиже</th>
-                            <th>Уақыт</th>
+                            <th>Сабақ/Қызмет</th>
+                            <th>Түрі</th>
+                            <th>Нәтиже/Күй</th>
+                            <th>Қосымша ақпарат</th>
                         </tr>
                     </thead>
                     <tbody>
             `;
             
-            // Соңғы 10 ойынды көрсету (кері ретпен)
-            const recentGames = gameHistory.slice(-10).reverse();
-            
-            recentGames.forEach(game => {
-                const date = new Date(game.date).toLocaleDateString('kk-KZ');
-                // ИСПРАВЛЕНО: используем словарь для перевода названий занятий
-                const lessonName = lessonNames[game.lesson] || game.lesson;
-                const difficultyName = getDifficultyName(game.difficulty);
-                const difficultyClass = getDifficultyClass(game.difficulty);
-                const timeFormatted = formatTime(game.time);
-                const percentageClass = getPercentageClass(game.percentage);
+            recentActivities.forEach(activity => {
+                const date = new Date(activity.date).toLocaleDateString('kk-KZ');
+                const time = new Date(activity.date).toLocaleTimeString('kk-KZ', { hour: '2-digit', minute: '2-digit' });
+                const lessonName = lessonNames[activity.lesson] || activity.lesson;
+                
+                let typeCell = '';
+                let resultCell = '';
+                let infoCell = '';
+                
+                if (activity.type === 'game') {
+                    // Ойындар
+                    const difficultyName = getDifficultyName(activity.difficulty);
+                    const difficultyClass = getDifficultyClass(activity.difficulty);
+                    const timeFormatted = formatTime(activity.time);
+                    const percentageClass = getPercentageClass(activity.percentage);
+                    
+                    typeCell = `<span class="difficulty-badge ${difficultyClass}">${difficultyName} ойын</span>`;
+                    resultCell = `<span class="${percentageClass}">${activity.score}/${activity.totalTasks} (${activity.percentage}%)</span>`;
+                    infoCell = `⏱️ ${timeFormatted}`;
+                } else {
+                    // Посещения (таблица, счет)
+                    typeCell = '<span class="activity-visit">👁️ Қарау</span>';
+                    resultCell = '👁️ Қаралды';
+                    if (activity.duration > 0) {
+                        infoCell = `⏱️ ${formatTime(activity.duration)} уақыт болды`;
+                    } else {
+                        infoCell = 'Қысқа қарау';
+                    }
+                }
                 
                 html += `
                     <tr>
-                        <td>${date}</td>
+                        <td>${date}<br><small>${time}</small></td>
                         <td>${lessonName}</td>
-                        <td><span class="difficulty-badge ${difficultyClass}">${difficultyName}</span></td>
-                        <td><span class="${percentageClass}">${game.score}/${game.totalTasks} (${game.percentage}%)</span></td>
-                        <td>${timeFormatted}</td>
+                        <td>${typeCell}</td>
+                        <td>${resultCell}</td>
+                        <td>${infoCell}</td>
                     </tr>
                 `;
             });
@@ -987,12 +1062,14 @@
         // Статистиканы жаңарту
         function updateStatistics() {
             const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const visitHistory = JSON.parse(localStorage.getItem('visitHistory') || '[]');
             const bestScores = JSON.parse(localStorage.getItem('bestScores') || '{}');
             
-            // Жалпы ойындар саны
-            document.getElementById('totalGames').textContent = gameHistory.length;
+            // Барлық қатысулар (ойындар + қараулар)
+            const totalActivities = gameHistory.length + visitHistory.length;
+            document.getElementById('totalGames').textContent = totalActivities;
             
-            // Ең жақсы нәтиже
+            // Ең жақсы нәтиже (только из игр)
             let bestPercentage = 0;
             Object.values(bestScores).forEach(score => {
                 if (score.percentage > bestPercentage) {
@@ -1001,88 +1078,81 @@
             });
             document.getElementById('bestScore').textContent = bestPercentage + '%';
             
-            // Орташа уақыт
-            let totalTime = 0;
-            gameHistory.forEach(game => {
-                totalTime += game.time;
-            });
-            const avgTime = gameHistory.length > 0 ? Math.round(totalTime / gameHistory.length) : 0;
-            document.getElementById('avgTime').textContent = formatTime(avgTime);
+            // Кестеге бару саны
+            const tableVisits = visitHistory.filter(v => v.lesson === 'table').length;
+            document.getElementById('tableVisits').textContent = tableVisits;
             
-            // Сәттілік деңгейі
-            let totalCorrect = 0;
-            let totalTasks = 0;
-            gameHistory.forEach(game => {
-                totalCorrect += game.score;
-                totalTasks += game.totalTasks;
-            });
-            const successRate = totalTasks > 0 ? Math.round((totalCorrect / totalTasks) * 100) : 0;
-            document.getElementById('successRate').textContent = successRate + '%';
+            // Санауға бару саны
+            const countVisits = visitHistory.filter(v => v.lesson === 'count').length;
+            document.getElementById('countVisits').textContent = countVisits;
         }
         
-        // Прогресс графиктерін жүктеу (ИСПРАВЛЕНО - все на казахском)
-        function loadProgressCharts() {
+        // Жүктеу графиктері белсенділік бойынша
+        function loadActivityCharts() {
             const gameHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const visitHistory = JSON.parse(localStorage.getItem('visitHistory') || '[]');
             const container = document.getElementById('progressChart');
             
-            if (gameHistory.length === 0) {
-                container.innerHTML = '<div class="no-data">Әлі статистика жоқ. Ойындар ойнап, прогрессіңізді көріңіз!</div>';
+            if (gameHistory.length === 0 && visitHistory.length === 0) {
+                container.innerHTML = '<div class="no-data">Әлі белсенділік статистикасы жоқ. Ойындар ойнаңыз немесе сабақтарды қараңыз!</div>';
                 return;
             }
             
-            // Сабақтар бойынша статистика (ИСПРАВЛЕНО - названия на казахском)
-            const lessonStats = {
-                'addition': { name: 'Қосу', total: 0, correct: 0 },
-                'subtraction': { name: 'Алу', total: 0, correct: 0 },
-                'multiplication': { name: 'Көбейту', total: 0, correct: 0 },
-                'division': { name: 'Бөлу', total: 0, correct: 0 },
-                'table': { name: 'Көбейту кестесі', total: 0, correct: 0 },
-                'brackets': { name: 'Жақшамен жұмыс', total: 0, correct: 0 },
-                'mixed': { name: 'Аралас есептер', total: 0, correct: 0 },
-                'count': { name: 'Жалпы санау', total: 0, correct: 0 }
+            // Статистика белсенділік түрлері бойынша
+            const activityTypes = {
+                'game': { name: 'Ойындар', count: 0 },
+                'visit': { name: 'Қараулар', count: 0 }
             };
             
+            activityTypes['game'].count = gameHistory.length;
+            activityTypes['visit'].count = visitHistory.length;
+            
+            // Сабақтар бойынша барлық белсенділік
+            const lessonActivity = {};
+            
+            // Ойындар бойынша
             gameHistory.forEach(game => {
-                if (lessonStats[game.lesson]) {
-                    lessonStats[game.lesson].total += game.totalTasks;
-                    lessonStats[game.lesson].correct += game.score;
+                if (!lessonActivity[game.lesson]) {
+                    lessonActivity[game.lesson] = { 
+                        name: lessonNames[game.lesson] || game.lesson,
+                        games: 0,
+                        visits: 0
+                    };
                 }
+                lessonActivity[game.lesson].games += 1;
             });
             
-            // Қиындық бойынша статистика
-            const difficultyStats = {
-                'easy': { name: 'Жеңіл', total: 0, correct: 0 },
-                'medium': { name: 'Орташа', total: 0, correct: 0 },
-                'hard': { name: 'Қиын', total: 0, correct: 0 }
-            };
-            
-            gameHistory.forEach(game => {
-                if (difficultyStats[game.difficulty]) {
-                    difficultyStats[game.difficulty].total += game.totalTasks;
-                    difficultyStats[game.difficulty].correct += game.score;
+            // Қараулар бойынша
+            visitHistory.forEach(visit => {
+                if (!lessonActivity[visit.lesson]) {
+                    lessonActivity[visit.lesson] = { 
+                        name: lessonNames[visit.lesson] || visit.lesson,
+                        games: 0,
+                        visits: 0
+                    };
                 }
+                lessonActivity[visit.lesson].visits += 1;
             });
             
             let html = '';
             
-            // Сабақтар бойынша график
+            // Белсенділік түрлері бойынша график
             html += '<div class="chart-container">';
-            html += '<h4 class="chart-title">Сабақтар бойынша сәттілік</h4>';
+            html += '<h4 class="chart-title">Белсенділік түрлері</h4>';
             
-            // Показываем только те занятия, по которым есть статистика
-            Object.entries(lessonStats).forEach(([key, stat]) => {
-                if (stat.total > 0) {
-                    const percentage = Math.round((stat.correct / stat.total) * 100);
-                    const percentageClass = getPercentageClass(percentage);
+            Object.entries(activityTypes).forEach(([key, stat]) => {
+                if (stat.count > 0) {
+                    const totalActivities = gameHistory.length + visitHistory.length;
+                    const percentage = Math.round((stat.count / totalActivities) * 100);
                     
                     html += `
                         <div class="chart-item">
                             <div class="chart-label">
                                 <span>${stat.name}</span>
-                                <span class="${percentageClass}">${percentage}%</span>
+                                <span>${stat.count} (${percentage}%)</span>
                             </div>
                             <div class="chart-bar">
-                                <div class="chart-fill" style="width: ${percentage}%; background-color: ${getColorByPercentage(percentage)};"></div>
+                                <div class="chart-fill" style="width: ${percentage}%; background-color: ${key === 'game' ? '#6ab1ff' : '#ff7b9c'};"></div>
                             </div>
                         </div>
                     `;
@@ -1091,27 +1161,35 @@
             
             html += '</div>';
             
-            // Қиындық бойынша график
+            // Сабақтар бойынша белсенділік графигі
             html += '<div class="chart-container">';
-            html += '<h4 class="chart-title">Қиындық бойынша сәттілік</h4>';
+            html += '<h4 class="chart-title">Сабақтар бойынша белсенділік</h4>';
             
-            Object.entries(difficultyStats).forEach(([key, stat]) => {
-                if (stat.total > 0) {
-                    const percentage = Math.round((stat.correct / stat.total) * 100);
-                    const percentageClass = getPercentageClass(percentage);
-                    
-                    html += `
-                        <div class="chart-item">
-                            <div class="chart-label">
-                                <span>${stat.name}</span>
-                                <span class="${percentageClass}">${percentage}%</span>
-                            </div>
-                            <div class="chart-bar">
-                                <div class="chart-fill" style="width: ${percentage}%; background-color: ${getColorByPercentage(percentage)};"></div>
-                            </div>
+            // Сортируем по общему количеству активности
+            const sortedLessons = Object.entries(lessonActivity)
+                .sort((a, b) => (b[1].games + b[1].visits) - (a[1].games + a[1].visits));
+            
+            // Показываем только топ-5
+            const topLessons = sortedLessons.slice(0, 5);
+            
+            // Находим максимальное значение для масштабирования
+            const maxActivity = Math.max(...topLessons.map(([_, stat]) => stat.games + stat.visits));
+            
+            topLessons.forEach(([key, stat]) => {
+                const totalActivity = stat.games + stat.visits;
+                const percentage = Math.round((totalActivity / maxActivity) * 100);
+                
+                html += `
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>${stat.name}</span>
+                            <span>${totalActivity} (${stat.games} ойын, ${stat.visits} қарау)</span>
                         </div>
-                    `;
-                }
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: ${percentage}%; background-color: #00b894;"></div>
+                        </div>
+                    </div>
+                `;
             });
             
             html += '</div>';
@@ -1150,11 +1228,6 @@
         }
         
         // Көмекші функциялар
-        function getLessonName(lessonKey) {
-            // ИСПРАВЛЕНО: используем словарь lessonNames
-            return lessonNames[lessonKey] || lessonKey;
-        }
-        
         function getDifficultyName(difficulty) {
             const difficulties = {
                 'easy': 'Жеңіл',
@@ -1183,12 +1256,6 @@
             if (percentage >= 80) return 'percentage-good';
             if (percentage >= 60) return 'percentage-medium';
             return 'percentage-low';
-        }
-        
-        function getColorByPercentage(percentage) {
-            if (percentage >= 80) return '#2ecc71';
-            if (percentage >= 60) return '#f39c12';
-            return '#e74c3c';
         }
     </script>
 </body>
