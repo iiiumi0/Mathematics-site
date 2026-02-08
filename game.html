@@ -313,6 +313,20 @@
             margin: 20px 0;
         }
         
+        .progress-notification {
+            background-color: #e6fffa;
+            color: #2ecc71;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 2px solid #2ecc71;
+        }
+        
         .restart-btn {
             background: linear-gradient(135deg, #6ab1ff, #a3d5ff);
             color: white;
@@ -367,6 +381,12 @@
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
         @media (max-width: 768px) {
@@ -461,6 +481,10 @@
             <div class="stars" id="starsRating">★★★★★</div>
             <div class="time-result" id="timeResult">
                 <i class="fas fa-stopwatch"></i> Уақыт: <span id="finalTime">00:00</span>
+            </div>
+            <div id="progressNotification" class="progress-notification" style="display: none;">
+                <i class="fas fa-trophy"></i>
+                <span id="progressMessage"></span>
             </div>
             <p class="results-message" id="resultsMessage">Сіз керемет орындадыңыз!</p>
             
@@ -954,6 +978,33 @@
             document.getElementById('progressFill').style.width = progressPercent + '%';
         }
         
+        // Прогресс сақтау функциясы
+        function getLevelProgress(lesson) {
+            const savedProgress = localStorage.getItem(`math_progress_${lesson}`);
+            return savedProgress ? JSON.parse(savedProgress) : {
+                easyCompleted: 0,
+                easyTotal: 5,
+                mediumCompleted: 0,
+                mediumTotal: 10,
+                hardCompleted: 0,
+                hardTotal: 0
+            };
+        }
+        
+        // Прогресті сақтау
+        function saveLevelProgress(lesson, difficulty) {
+            const progress = getLevelProgress(lesson);
+            
+            if (difficulty === 'easy') {
+                progress.easyCompleted += 1;
+            } else if (difficulty === 'medium') {
+                progress.mediumCompleted += 1;
+            }
+            
+            localStorage.setItem(`math_progress_${lesson}`, JSON.stringify(progress));
+            return progress;
+        }
+        
         // Ойын нәтижесін сақтау
         function saveGameResult() {
             try {
@@ -980,8 +1031,51 @@
                 
                 // Ең жақсы нәтижені жаңарту
                 updateBestScore(gameResult);
+                
+                // ПРОГРЕСС ЖҮЙЕСІН САҚТАУ
+                const progress = saveLevelProgress(lesson, difficulty);
+                
+                // Прогресс туралы хабарламаны көрсету
+                showProgressNotification(progress, difficulty);
+                
             } catch (error) {
                 console.error("Нәтижені сақтау кезінде қате:", error);
+            }
+        }
+        
+        // Прогресс туралы хабарламаны көрсету
+        function showProgressNotification(progress, difficulty) {
+            const progressNotification = document.getElementById('progressNotification');
+            const progressMessage = document.getElementById('progressMessage');
+            
+            let message = '';
+            
+            if (difficulty === 'easy') {
+                const remaining = 5 - progress.easyCompleted;
+                if (remaining <= 0) {
+                    message = '🎉 Тамаша! Сіз жеңіл деңгейді толық аяқтадыңыз. Енді орташа деңгейге өтуге болады!';
+                } else {
+                    message = `Орташа деңгейге өту үшін жеңіл деңгейді тағы ${remaining} рет ойнау керек.`;
+                }
+            } else if (difficulty === 'medium') {
+                const remaining = 10 - progress.mediumCompleted;
+                if (remaining <= 0) {
+                    message = '🏆 Керемет! Сіз орташа деңгейді толық аяқтадыңыз. Енді қиын деңгейге өтуге болады!';
+                } else {
+                    message = `Қиын деңгейге өту үшін орташа деңгейді тағы ${remaining} рет ойнау керек.`;
+                }
+            }
+            
+            if (message) {
+                progressMessage.textContent = message;
+                progressNotification.style.display = 'flex';
+                progressNotification.style.animation = 'pulse 1s infinite';
+                
+                // Хабарламаны 7 секундтан кейін жасыру
+                setTimeout(() => {
+                    progressNotification.style.display = 'none';
+                    progressNotification.style.animation = 'none';
+                }, 7000);
             }
         }
         
