@@ -644,7 +644,7 @@
                         🏆
                     </div>
                     <div class="stat-value" id="totalGames">0</div>
-                    <div class="stat-label">Барлық қатысулар</div>
+                    <div class="stat-label">Барлық ойындар</div>
                 </div>
                 
                 <div class="stat-card">
@@ -659,16 +659,16 @@
                     <div class="stat-icon clock">
                         ⏱️
                     </div>
-                    <div class="stat-value" id="tableVisits">0</div>
-                    <div class="stat-label">Кестеге бару</div>
+                    <div class="stat-value" id="totalTime">00:00</div>
+                    <div class="stat-label">Ойнау уақыты</div>
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-icon target">
                         🎯
                     </div>
-                    <div class="stat-value" id="countVisits">0</div>
-                    <div class="stat-label">Санауға бару</div>
+                    <div class="stat-value" id="successRate">0%</div>
+                    <div class="stat-label">Сәттілік пайызы%</div>
                 </div>
             </div>
         </div>
@@ -740,9 +740,8 @@
         
         // Инициализация обработчиков событий
         function initEventListeners() {
-            // Кнопка "Артқа" - ИСПРАВЛЕНО
+            // Кнопка "Артқа"
             document.getElementById('backButton').addEventListener('click', function() {
-                // Всегда возвращаемся на lessons.html
                 window.location.href = `lessons.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
             
@@ -766,7 +765,7 @@
                 window.location.href = `index.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
             
-            // Кнопка "Біз туралы" - переходит на страницу onas.html
+            // Кнопка "Біз туралы"
             document.getElementById('aboutButton').addEventListener('click', function() {
                 window.location.href = `onas.html?username=${encodeURIComponent(userData.name)}&age=${userData.age}`;
             });
@@ -857,7 +856,6 @@
             
             // Редактирование пола
             document.getElementById('editGenderBtn').addEventListener('click', function() {
-                // Установить текущее значение
                 if (userData.gender === 'Ұл бала') {
                     document.getElementById('genderBoy').checked = true;
                 } else {
@@ -893,13 +891,11 @@
         
         // Пайдаланушы деректерін жүктеу
         function loadUserData() {
-            // Загрузить сохраненные данные из localStorage
             const savedName = localStorage.getItem('userName');
             const savedAge = localStorage.getItem('userAge');
             const savedGender = localStorage.getItem('userGender');
             const savedRegDate = localStorage.getItem('userRegDate');
             
-            // Обновить userData
             if (savedName) userData.name = savedName;
             if (savedAge) userData.age = savedAge;
             if (savedGender) userData.gender = savedGender;
@@ -909,24 +905,20 @@
                 localStorage.setItem('userRegDate', userData.registrationDate);
             }
             
-            // Обновить отображение
             updateUserInfo();
         }
         
         // Обновить информацию пользователя на странице
         function updateUserInfo() {
-            // Имя
             document.getElementById('profileName').textContent = userData.name;
             document.getElementById('userNameText').textContent = userData.name;
             document.getElementById('userAge').textContent = userData.age;
             document.getElementById('userGender').textContent = userData.gender;
             document.getElementById('regDate').textContent = userData.registrationDate;
             
-            // Сообщение в модальном окне выхода
             document.getElementById('logoutMessage').textContent = 
                 `${userData.name}, сіз шынымен аккаунтыңыздан шығып кеткіңіз келе ме?`;
             
-            // Аватарды жүктеу
             loadAvatar();
         }
         
@@ -942,7 +934,6 @@
                 avatarImg.style.color = 'transparent';
                 avatarImg.textContent = '';
             } else {
-                // Әдепкі аватар (тексттік версия)
                 avatarImg.alt = userData.name;
                 avatarImg.style.backgroundColor = '#6ab1ff';
                 avatarImg.style.display = 'flex';
@@ -967,10 +958,8 @@
                 return;
             }
             
-            // Объединяем историю игр и посещений
             let allActivities = [];
             
-            // Добавляем игры
             gameHistory.forEach(game => {
                 allActivities.push({
                     type: 'game',
@@ -984,7 +973,6 @@
                 });
             });
             
-            // Добавляем посещения
             visitHistory.forEach(visit => {
                 allActivities.push({
                     type: 'visit',
@@ -994,10 +982,8 @@
                 });
             });
             
-            // Сортируем по дате (новые сначала)
             allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
             
-            // Показываем только последние 15 активностей
             const recentActivities = allActivities.slice(0, 15);
             
             let html = `
@@ -1024,7 +1010,6 @@
                 let infoCell = '';
                 
                 if (activity.type === 'game') {
-                    // Ойындар
                     const difficultyName = getDifficultyName(activity.difficulty);
                     const difficultyClass = getDifficultyClass(activity.difficulty);
                     const timeFormatted = formatTime(activity.time);
@@ -1034,7 +1019,6 @@
                     resultCell = `<span class="${percentageClass}">${activity.score}/${activity.totalTasks} (${activity.percentage}%)</span>`;
                     infoCell = `⏱️ ${timeFormatted}`;
                 } else {
-                    // Посещения (таблица, счет)
                     typeCell = '<span class="activity-visit">👁️ Қарау</span>';
                     resultCell = '👁️ Қаралды';
                     if (activity.duration > 0) {
@@ -1065,11 +1049,10 @@
             const visitHistory = JSON.parse(localStorage.getItem('visitHistory') || '[]');
             const bestScores = JSON.parse(localStorage.getItem('bestScores') || '{}');
             
-            // Барлық қатысулар (ойындар + қараулар)
-            const totalActivities = gameHistory.length + visitHistory.length;
-            document.getElementById('totalGames').textContent = totalActivities;
+            // Барлық ойындар саны
+            document.getElementById('totalGames').textContent = gameHistory.length;
             
-            // Ең жақсы нәтиже (только из игр)
+            // Ең жақсы нәтиже
             let bestPercentage = 0;
             Object.values(bestScores).forEach(score => {
                 if (score.percentage > bestPercentage) {
@@ -1078,13 +1061,26 @@
             });
             document.getElementById('bestScore').textContent = bestPercentage + '%';
             
-            // Кестеге бару саны
-            const tableVisits = visitHistory.filter(v => v.lesson === 'table').length;
-            document.getElementById('tableVisits').textContent = tableVisits;
+            // Жалпы уақыт (барлық ойындардағы уақытты қосу)
+            let totalSeconds = 0;
+            gameHistory.forEach(game => {
+                totalSeconds += game.time || 0;
+            });
+            document.getElementById('totalTime').textContent = formatTime(totalSeconds);
             
-            // Санауға бару саны
-            const countVisits = visitHistory.filter(v => v.lesson === 'count').length;
-            document.getElementById('countVisits').textContent = countVisits;
+            // Орташа сәттілік пайызы
+            let totalPercentage = 0;
+            let gamesWithPercentage = 0;
+            
+            gameHistory.forEach(game => {
+                if (game.percentage) {
+                    totalPercentage += game.percentage;
+                    gamesWithPercentage++;
+                }
+            });
+            
+            const averagePercentage = gamesWithPercentage > 0 ? Math.round(totalPercentage / gamesWithPercentage) : 0;
+            document.getElementById('successRate').textContent = averagePercentage + '%';
         }
         
         // Жүктеу графиктері белсенділік бойынша
@@ -1098,19 +1094,13 @@
                 return;
             }
             
-            // Статистика белсенділік түрлері бойынша
             const activityTypes = {
-                'game': { name: 'Ойындар', count: 0 },
-                'visit': { name: 'Қараулар', count: 0 }
+                'game': { name: 'Ойындар', count: gameHistory.length },
+                'visit': { name: 'Қараулар', count: visitHistory.length }
             };
             
-            activityTypes['game'].count = gameHistory.length;
-            activityTypes['visit'].count = visitHistory.length;
-            
-            // Сабақтар бойынша барлық белсенділік
             const lessonActivity = {};
             
-            // Ойындар бойынша
             gameHistory.forEach(game => {
                 if (!lessonActivity[game.lesson]) {
                     lessonActivity[game.lesson] = { 
@@ -1122,7 +1112,6 @@
                 lessonActivity[game.lesson].games += 1;
             });
             
-            // Қараулар бойынша
             visitHistory.forEach(visit => {
                 if (!lessonActivity[visit.lesson]) {
                     lessonActivity[visit.lesson] = { 
@@ -1140,9 +1129,10 @@
             html += '<div class="chart-container">';
             html += '<h4 class="chart-title">Белсенділік түрлері</h4>';
             
+            const totalActivities = gameHistory.length + visitHistory.length;
+            
             Object.entries(activityTypes).forEach(([key, stat]) => {
                 if (stat.count > 0) {
-                    const totalActivities = gameHistory.length + visitHistory.length;
                     const percentage = Math.round((stat.count / totalActivities) * 100);
                     
                     html += `
@@ -1165,15 +1155,12 @@
             html += '<div class="chart-container">';
             html += '<h4 class="chart-title">Сабақтар бойынша белсенділік</h4>';
             
-            // Сортируем по общему количеству активности
             const sortedLessons = Object.entries(lessonActivity)
                 .sort((a, b) => (b[1].games + b[1].visits) - (a[1].games + a[1].visits));
             
-            // Показываем только топ-5
             const topLessons = sortedLessons.slice(0, 5);
             
-            // Находим максимальное значение для масштабирования
-            const maxActivity = Math.max(...topLessons.map(([_, stat]) => stat.games + stat.visits));
+            const maxActivity = topLessons.length > 0 ? Math.max(...topLessons.map(([_, stat]) => stat.games + stat.visits)) : 1;
             
             topLessons.forEach(([key, stat]) => {
                 const totalActivity = stat.games + stat.visits;
@@ -1196,7 +1183,6 @@
             
             container.innerHTML = html;
             
-            // Анимация для графиков
             setTimeout(() => {
                 document.querySelectorAll('.chart-fill').forEach(fill => {
                     const width = fill.style.width;
@@ -1215,7 +1201,6 @@
         
         // Выход из аккаунта
         function logoutUser() {
-            // Сохранить последнюю сессию
             const lastSession = {
                 date: new Date().toISOString(),
                 page: 'profile.html',
@@ -1223,7 +1208,6 @@
             };
             localStorage.setItem('lastSession', JSON.stringify(lastSession));
             
-            // Перенаправить на главную страницу
             window.location.href = 'index.html';
         }
         
@@ -1247,8 +1231,9 @@
         }
         
         function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) seconds = 0;
             const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
+            const secs = Math.floor(seconds % 60);
             return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
         
